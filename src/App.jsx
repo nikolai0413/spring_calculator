@@ -1,53 +1,61 @@
 import React from "react";
 import Select from "react-select";
 
+import { materials, endTypes, theSchema } from "./data.js";
+
 class App extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      material: {
-        id: 0,
-        name: "Select a material...",
-      },
+      material: undefined,
+      endType: undefined,
+      wireDiameter_mm: undefined,
+      OD_mm: undefined,
+      L0_mm: undefined,
+      Ls_mm: undefined,
+      wasValidated: false,
+      inputsValid: true,
     };
 
-    this.materials = [
-      {
-        id: 1,
-        name: "Music wire (ASTM No. A228)",
-      },
-      {
-        id: 2,
-        name: "Hard-drawn wire (ASTM No. A227)",
-      },
-      {
-        id: 3,
-        name: "Chrome-vanadium wire (ASTM No. A232)",
-      },
-      {
-        id: 4,
-        name: "Chrome-silicon wire (ASTM No. A401)",
-      },
-      {
-        id: 5,
-        name: "302 stainless wire (ASTM No. A313)",
-      },
-      {
-        id: 6,
-        name: "Phosphor-bronze wire (ASTM No. B159)",
-      },
-    ];
+    this.calculateButton = this.calculateButton.bind(this);
+    this.validateData = this.validateData.bind(this);
+  }
+
+  validateData(cb) {
+    // unpack data
+    const state = {
+      material: this.state.material?.label || null,
+      endType: this.state.endType?.label || null,
+      // to float conversions
+      wireDiameter_mm: +this.state.wireDiameter_mm,
+      OD_mm: +this.state.OD_mm,
+      L0_mm: +this.state.L0_mm,
+      Ls_mm: +this.state.Ls_mm,
+    };
+
+    theSchema
+      .validate(state)
+      .then(() => {
+        this.setState({ inputsValid: true }, cb);
+      })
+      .catch(() => {
+        this.setState({ inputsValid: false }, cb);
+      });
+  }
+
+  calculateButton() {
+    this.setState({ wasValidated: true }, () => {
+      this.validateData(() => {
+        console.log("done");
+      });
+    });
   }
 
   render() {
     return (
       <div id="app">
         <div className="container py-4">
-          <header className="pb-3 mb-4 border-bottom">
-            <span className="display-2">Spring Calculator</span>
-          </header>
-
           <div className="p-5 mb-4 bg-light rounded-3">
             <div className="container-fluid py-5">
               <h1 className="display-5 fw-bold">ME35401 Spring Calculator</h1>
@@ -60,25 +68,251 @@ class App extends React.Component {
             </div>
           </div>
 
-          <div className="row align-items-md-stretch">
-            <div className="col-md-6">
-              <div className="h-100 p-5 text-white bg-dark rounded-3">
-                <h3>Select a material</h3>
-                <Select options={this.materials} />
+          <div className="row align-items-md-stretch" id="start">
+            <div className="col-md-6 mt-2">
+              <div className="h-40 p-3 text-white bg-dark rounded-3">
+                <h3>Select End Type</h3>
+                <Select
+                  onChange={(endType) => this.setState({ endType: endType })}
+                  className="text-black"
+                  options={endTypes}
+                />
               </div>
             </div>
-            <div className="col-md-6">
-              <div className="h-100 p-5 bg-light border rounded-3">
-                <h2>Add borders</h2>
-                <p>
-                  Or, keep it light and add a border for some added definition
-                  to the boundaries of your content. Be sure to look under the
-                  hood at the source HTML here as we've adjusted the alignment
-                  and sizing of both column's content for equal-height.
-                </p>
-                <button className="btn btn-outline-secondary" type="button">
-                  Example button
-                </button>
+            <div className="col-md-6 mt-2">
+              <div className="h-40 p-3 bg-light border rounded-3">
+                <h3>Select Material</h3>
+                <Select
+                  onChange={(mat) => this.setState({ material: mat })}
+                  className="text-black"
+                  options={materials}
+                />
+              </div>
+            </div>
+
+            <div className="col-md-3 mt-2">
+              <div className="h-40 p-3 text-white bg-dark rounded-3">
+                <h3 htmlFor="exampleFormControlInput1" className="form-label">
+                  Wire Diameter
+                </h3>
+                <div className="input-group">
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="exampleFormControlInput1"
+                    placeholder="Ex: 2.5"
+                    onChange={(ev) =>
+                      this.setState({ wireDiameter_mm: ev.target.value })
+                    }
+                  />
+                  <span className="input-group-text">mm</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="col-md-3 mt-2">
+              <div className="h-40 p-3 bg-light border rounded-3">
+                <h3 htmlFor="exampleFormControlInput1" className="form-label">
+                  Outer Diameter
+                </h3>
+                <div className="input-group">
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="exampleFormControlInput1"
+                    placeholder="Ex: 5.0"
+                    onChange={(ev) => this.setState({ OD_mm: ev.target.value })}
+                  />
+                  <span className="input-group-text">mm</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="col-md-3 mt-2">
+              <div className="h-40 p-3 text-white bg-dark rounded-3">
+                <h3 htmlFor="exampleFormControlInput1" className="form-label">
+                  Free Length{" "}
+                  <i>
+                    L<sub>0</sub>
+                  </i>
+                </h3>
+                <div className="input-group">
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="exampleFormControlInput1"
+                    placeholder="Ex: 20.0"
+                    onChange={(ev) => this.setState({ L0_mm: ev.target.value })}
+                  />
+                  <span className="input-group-text">mm</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="col-md-3 mt-2">
+              <div className="h-40 p-3 bg-light border rounded-3">
+                <h3 htmlFor="exampleFormControlInput1" className="form-label">
+                  Solid Length{" "}
+                  <i>
+                    L<sub>s</sub>
+                  </i>
+                </h3>
+                <div className="input-group">
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="exampleFormControlInput1"
+                    placeholder="Ex: 25.0"
+                    onChange={(ev) => this.setState({ Ls_mm: ev.target.value })}
+                  />
+                  <span className="input-group-text">mm</span>
+                </div>
+              </div>
+            </div>
+
+            <div className={"row justify-content-center"} noValidate>
+              <div className="col-3 text-center mt-4">
+                <a
+                  className="btn btn-secondary btn-lg form-control"
+                  onClick={this.calculateButton}
+                >
+                  Calculate
+                </a>
+
+                {this.state.wasValidated ? (
+                  !this.state.inputsValid ? (
+                    <div className="text-danger">Error: Check inputs</div>
+                  ) : (
+                    <></>
+                  )
+                ) : (
+                  <></>
+                )}
+              </div>
+            </div>
+
+            <h1 className="display-2">Results</h1>
+            <hr />
+
+            <div className="row mt-1 justify-content-center">
+              <div className="col-8">
+                <table class="table table-bordered table-hover">
+                  <thead>
+                    <tr>
+                      <th scope="col">Property</th>
+                      <th scope="col">Value</th>
+                      <th scope="col">Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td scope="row">
+                        Pitch <i>p</i>
+                      </td>
+                      <td>Mark</td>
+                      <td>Otto</td>
+                    </tr>
+                    <tr>
+                      <td scope="row">
+                        Total # of coils{" "}
+                        <i>
+                          N<sub>t</sub>
+                        </i>
+                      </td>
+                      <td>Jacob</td>
+                      <td>Thornton</td>
+                    </tr>
+                    <tr>
+                      <td scope="row">
+                        Number of active coils{" "}
+                        <i>
+                          N<sub>a</sub>
+                        </i>
+                      </td>
+                      <td>Larry the Bird</td>
+                      <td>@twitter</td>
+                    </tr>
+                    <tr>
+                      <td scope="row">
+                        Spring rate <i>k</i>
+                      </td>
+                      <td>Larry the Bird</td>
+                      <td>@twitter</td>
+                    </tr>
+                    <tr>
+                      <td scope="row">
+                        Force needed to compress to{" "}
+                        <i>
+                          L<sub>s</sub>
+                        </i>
+                      </td>
+                      <td>Larry the Bird</td>
+                      <td>@twitter</td>
+                    </tr>
+                    <tr>
+                      <td scope="row">
+                        Factor of safety <i>n</i> when compressed to{" "}
+                        <i>
+                          L<sub>s</sub>
+                        </i>
+                      </td>
+                      <td>Larry the Bird</td>
+                      <td>@twitter</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div className="container px-5">
+              <h1 className="display-6">Static Load Analysis</h1>
+              <hr />
+              <div className="row mt-1 justify-content-center">
+                <div className="col-md-3 mt-2">
+                  <div className="h-40 p-3 bg-light border rounded-3">
+                    <h3
+                      htmlFor="exampleFormControlInput1"
+                      className="form-label"
+                    >
+                      Static Load{" "}
+                      <i>
+                        F<sub>s</sub>
+                      </i>
+                    </h3>
+                    <div className="input-group">
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="exampleFormControlInput1"
+                        placeholder="Ex: 110.2"
+                        onChange={(ev) =>
+                          this.setState({ Ls_mm: ev.target.value })
+                        }
+                      />
+                      <span className="input-group-text">N</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className={"row justify-content-center"} noValidate>
+                  <div className="col-3 text-center mt-4">
+                    <a
+                      className="btn btn-secondary btn-lg form-control"
+                    >
+                      Calculate
+                    </a>
+
+                    {/* {this.state.wasValidated ? (
+                      !this.state.inputsValid ? (
+                        <div className="text-danger">Error: Check inputs</div>
+                      ) : (
+                        <></>
+                      )
+                    ) : (
+                      <></>
+                    )} */}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
