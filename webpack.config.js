@@ -1,36 +1,24 @@
-path = require("path")
+const path = require('path');
 
-var config = {
-  // 打包的入口文件
-  entry: './main.js',
-
-  // 配置打包结果，path定义输出文件夹，filename定义打包结果文件的名称
-	output: {
-		path: path.resolve(__dirname, 'dist'),
-		filename: 'bundle.js',
-		chunkFilename: '[id].js',
-		publicPath: ''
-},
-
-  // 设置服务器端口号
-  devServer: {
-    inline: true,
-    port: 7777
-  },
-
-  // 配置模块的处理逻辑，用loaders定义加载器
+module.exports = {
+  entry: path.resolve(__dirname, './main.js'),
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
-        loader: 'babel',
-        query: {
-          presets: ['es2015', 'react']
-        }
+        use: ['babel-loader']
       }
     ]
-  }
-}
-
-module.exports = config;
+  },
+  // resolve: {
+  //   extensions: ['*', '.jsx']
+  // },
+  output: {
+    path: path.resolve(__dirname, './dist'),
+    filename: 'bundle.js',
+  },
+  devServer: {
+    static: '.'
+  },
+};
