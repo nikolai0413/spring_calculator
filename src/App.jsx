@@ -184,7 +184,7 @@ class App extends React.Component {
             </div>
 
             <div className={"row justify-content-center"} noValidate>
-              <div className="col-3 text-center mt-4">
+              <div className="col-md-3 text-center mt-4">
                 <a
                   className="btn btn-secondary btn-lg form-control"
                   onClick={this.calculateButton}
@@ -208,7 +208,7 @@ class App extends React.Component {
             <hr />
 
             <div className="row mt-1 justify-content-center">
-              <div className="col-8">
+              <div className="col-md-8">
                 <table className="table table-bordered table-hover">
                   <thead>
                     <tr>
@@ -308,7 +308,7 @@ class App extends React.Component {
                 </div>
 
                 <div className={"row justify-content-center"} noValidate>
-                  <div className="col-3 text-center mt-4">
+                  <div className="col-md-3 text-center mt-4">
                     <a className="btn btn-secondary btn-lg form-control">
                       Calculate
                     </a>
