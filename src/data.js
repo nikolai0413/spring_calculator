@@ -59,3 +59,12 @@ export const theSchema = object().shape({
   L0_mm: number().positive().required(),
   Ls_mm: number().positive().required()
 });
+
+export const mainResultsTemplate = {
+  pitch: "",
+  nt: "",
+  na: "",
+  k: "",
+  F_ls: "",
+  n_ls: ""
+};

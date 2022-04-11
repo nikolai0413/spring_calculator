@@ -1,7 +1,8 @@
 import React from "react";
 import Select from "react-select";
+import axios from "axios";
 
-import { materials, endTypes, theSchema } from "./data.js";
+import { materials, endTypes, theSchema, mainResultsTemplate } from "./data.js";
 
 class App extends React.Component {
   constructor(props) {
@@ -16,6 +17,8 @@ class App extends React.Component {
       Ls_mm: undefined,
       wasValidated: false,
       inputsValid: true,
+      springReqData: undefined,
+      mainResults: {...mainResultsTemplate}
     };
 
     this.calculateButton = this.calculateButton.bind(this);
@@ -24,7 +27,7 @@ class App extends React.Component {
 
   validateData(cb) {
     // unpack data
-    const state = {
+    const springReqData = {
       material: this.state.material?.label || null,
       endType: this.state.endType?.label || null,
       // to float conversions
@@ -35,19 +38,29 @@ class App extends React.Component {
     };
 
     theSchema
-      .validate(state)
+      .validate(springReqData)
       .then(() => {
-        this.setState({ inputsValid: true }, cb);
+        this.setState({ inputsValid: true, springReqData }, cb);
       })
       .catch(() => {
-        this.setState({ inputsValid: false }, cb);
+        this.setState({ inputsValid: false, springReqData }, cb);
       });
   }
 
   calculateButton() {
-    this.setState({ wasValidated: true }, () => {
+    this.setState({ wasValidated: true, mainResults: {...mainResultsTemplate} }, () => {
       this.validateData(() => {
-        console.log("done");
+        if (this.state.inputsValid) {
+          axios
+            .post(
+              "https://vhdufpz2ne.execute-api.us-east-1.amazonaws.com/attempt1_python",
+              this.state.springReqData
+            )
+            .then((rep) => {
+              this.setState({ mainResults: rep.data })
+            })
+            .catch((err) => console.log(err));
+        }
       });
     });
   }
@@ -196,7 +209,7 @@ class App extends React.Component {
 
             <div className="row mt-1 justify-content-center">
               <div className="col-8">
-                <table class="table table-bordered table-hover">
+                <table className="table table-bordered table-hover">
                   <thead>
                     <tr>
                       <th scope="col">Property</th>
@@ -209,8 +222,8 @@ class App extends React.Component {
                       <td scope="row">
                         Pitch <i>p</i>
                       </td>
-                      <td>Mark</td>
-                      <td>Otto</td>
+                      <td>{this.state.mainResults.p}</td>
+                      <td>mm</td>
                     </tr>
                     <tr>
                       <td scope="row">
@@ -219,8 +232,8 @@ class App extends React.Component {
                           N<sub>t</sub>
                         </i>
                       </td>
-                      <td>Jacob</td>
-                      <td>Thornton</td>
+                      <td>{this.state.mainResults.nt}</td>
+                      <td>#</td>
                     </tr>
                     <tr>
                       <td scope="row">
@@ -229,15 +242,15 @@ class App extends React.Component {
                           N<sub>a</sub>
                         </i>
                       </td>
-                      <td>Larry the Bird</td>
-                      <td>@twitter</td>
+                      <td>{this.state.mainResults.na}</td>
+                      <td>#</td>
                     </tr>
                     <tr>
                       <td scope="row">
                         Spring rate <i>k</i>
                       </td>
-                      <td>Larry the Bird</td>
-                      <td>@twitter</td>
+                      <td>{this.state.mainResults.k}</td>
+                      <td>N/m</td>
                     </tr>
                     <tr>
                       <td scope="row">
@@ -246,8 +259,8 @@ class App extends React.Component {
                           L<sub>s</sub>
                         </i>
                       </td>
-                      <td>Larry the Bird</td>
-                      <td>@twitter</td>
+                      <td>{this.state.mainResults.F_ls}</td>
+                      <td>N</td>
                     </tr>
                     <tr>
                       <td scope="row">
@@ -256,8 +269,8 @@ class App extends React.Component {
                           L<sub>s</sub>
                         </i>
                       </td>
-                      <td>Larry the Bird</td>
-                      <td>@twitter</td>
+                      <td>{this.state.mainResults.F_ls}</td>
+                      <td></td>
                     </tr>
                   </tbody>
                 </table>
@@ -296,9 +309,7 @@ class App extends React.Component {
 
                 <div className={"row justify-content-center"} noValidate>
                   <div className="col-3 text-center mt-4">
-                    <a
-                      className="btn btn-secondary btn-lg form-control"
-                    >
+                    <a className="btn btn-secondary btn-lg form-control">
                       Calculate
                     </a>
 
