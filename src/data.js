@@ -70,9 +70,9 @@ export const mainResultsTemplate = {
 };
 
 export const staticSchema = object().shape({
-  n_s: number().required()
+  Fs_N: number().required()
 });
 
 export const staticResultsTemplate = {
-	n_s: ""
+	Fs_N: ""
 }

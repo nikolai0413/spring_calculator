@@ -122,32 +122,56 @@ class App extends React.Component {
 
   validateStatic(cb) {
     const staticReqData = {
-      F_s: +this.state.Fs_N,
+      Fs_N: +this.state.Fs_N,
     };
 
-    staticSchema.validate(staticReqData)
+    staticSchema
+      .validate(staticReqData)
       .then(() => {
         this.setState({ inputError: { static: false }, staticReqData }, cb);
       })
       .catch(() => {
-        this.setState({ inputError: {static: true }, staticReqData }, cb);
-      })
+        this.setState({ inputError: { static: true }, staticReqData }, cb);
+      });
   }
 
   calculateStatic() {
-    this.setState({
-      wasValidated: { static: true },
-      staticResults: {...staticResultsTemplate}, // clear table
-      loading: { static: true },                 // show spinner
-      backendError: { static: false }             // reset backend error
-    }, () => {
-      this.validateStatic(() => {
-        if (!this.state.inputError.static) {
-
-        }
-      })
-    })
-
+    this.setState(
+      {
+        wasValidated: { static: true },
+        staticResults: { ...staticResultsTemplate }, // clear table
+        loading: { static: true }, // show spinner
+        backendError: { static: false }, // reset backend error
+      },
+      () => {
+        this.validateStatic(() => {
+          if (!this.state.inputError.static) {
+            axios
+              .post(
+                "https://vhdufpz2ne.execute-api.us-east-1.amazonaws.com/attempt1_python",
+                this.state.staticReqData,
+                { timeout: 3500, params: { CALCULATION: "STATIC" } }
+              )
+              .then((rep) => {
+                console.log(rep)
+                this.setState({
+                  staticResults: rep.data,
+                  loading: { static: false },
+                });
+              })
+              .catch((err) => {
+                console.log(err);
+                this.setState({
+                  backendError: { static: true },
+                  loading: { static: false },
+                });
+              });
+          } else {
+            this.setState({ loading: { static: false }})
+          }
+        });
+      }
+    );
   }
 
   render() {
@@ -416,6 +440,34 @@ class App extends React.Component {
                   >
                     Calculate
                   </a>
+
+                  {this.state.wasValidated.static ? (
+                    this.state.inputError.static ? (
+                      <div className="text-danger">Error: Check inputs</div>
+                    ) : (
+                      <></>
+                    )
+                  ) : (
+                    <></>
+                  )}
+
+                  {this.state.backendError.static ? (
+                    <div className="text-danger">
+                      Error: Cannot Calculate (backend error)
+                    </div>
+                  ) : (
+                    <></>
+                  )}
+
+                  {this.state.loading.static ? (
+                    <div className="my-2">
+                      <img src="assets/spinner.svg" />
+                    </div>
+                  ) : (
+                    <div className="my-2 invisible">
+                      <img src="assets/spinner.svg" />
+                    </div>
+                  )}
                 </div>
               </div>
 
