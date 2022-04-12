@@ -69,6 +69,10 @@ export const mainResultsTemplate = {
   n_ls: ""
 };
 
+export const staticSchema = object().shape({
+  n_s: number().required()
+});
+
 export const staticResultsTemplate = {
 	n_s: ""
 }
