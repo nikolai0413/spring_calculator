@@ -51,7 +51,7 @@ export const endTypes = [
 export const endTypes_labels = endTypes.map(obj => obj.label);
 
 
-export const theSchema = object().shape({
+export const mainSchema = object().shape({
   material: string().oneOf(materials_labels).required(),
   endType: string().oneOf(endTypes_labels).required(),
   wireDiameter_mm: number().positive().required(),
@@ -68,3 +68,7 @@ export const mainResultsTemplate = {
   F_ls: "",
   n_ls: ""
 };
+
+export const staticResultsTemplate = {
+	n_s: ""
+}
