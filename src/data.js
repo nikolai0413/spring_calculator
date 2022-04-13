@@ -74,5 +74,14 @@ export const staticSchema = object().shape({
 });
 
 export const staticResultsTemplate = {
-	Fs_N: ""
+	n_s: ""
+}
+
+export const fatigueSchema = object().shape({
+	F_max_N: number().required(),
+	F_min_N: number().required()
+});
+
+export const fatigueResultsTemplate = {
+	n_f: ""
 }

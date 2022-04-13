@@ -1,15 +1,20 @@
 import {
-  endTypes,
   mainResultsTemplate,
   mainSchema,
-  materials,
   staticResultsTemplate,
   staticSchema,
-} from "./data.js";
+  fatigueResultsTemplate,
+  fatigueSchema,
+} from './data.js';
 
-import React from "react";
-import Select from "react-select";
-import axios from "axios";
+import _ from 'lodash';
+
+import Main from './Main.jsx';
+import Static from './Static.jsx';
+import React from 'react';
+
+import axios from 'axios';
+import Fatigue from './Fatigue.jsx';
 
 class App extends React.Component {
   constructor(props) {
@@ -24,6 +29,9 @@ class App extends React.Component {
       Ls_mm: undefined,
 
       Fs_N: undefined,
+
+      F_max_N: undefined,
+      F_min_N: undefined,
 
       wasValidated: {
         main: false,
@@ -52,24 +60,49 @@ class App extends React.Component {
 
       mainResults: { ...mainResultsTemplate },
       staticResults: { ...staticResultsTemplate },
+      fatigueResults: { ...fatigueResultsTemplate },
     };
 
+    this.selectUpdate = this.selectUpdate.bind(this);
+    this.eventUpdate = this.eventUpdate.bind(this);
     this.validateMain = this.validateMain.bind(this);
     this.calculateMain = this.calculateMain.bind(this);
     this.validateStatic = this.validateStatic.bind(this);
     this.calculateStatic = this.calculateStatic.bind(this);
+    this.validateFatigue = this.validateFatigue.bind(this);
+    this.calculateFatigue = this.calculateFatigue.bind(this);
+  }
+
+  selectUpdate(key) {
+    return (value) => {
+      this.setState({ [key]: value });
+    };
+  }
+
+  eventUpdate(key) {
+    return (ev) => {
+      this.setState({ [key]: ev?.target?.value });
+    };
   }
 
   validateMain(cb) {
+    // clean numeric data
+    let numericValues = _.pick(this.state, [
+      'wireDiameter_mm',
+      'OD_mm',
+      'L0_mm',
+      'Ls_mm',
+    ]);
+    numericValues = _.mapValues(numericValues, (value) => _.trim(value));
+    numericValues = _.mapValues(numericValues, (value) =>
+      value === '' ? null : +value
+    );
+
     // unpack data
     const mainReqData = {
       material: this.state.material?.label || null,
       endType: this.state.endType?.label || null,
-      // to float conversions
-      wireDiameter_mm: +this.state.wireDiameter_mm,
-      OD_mm: +this.state.OD_mm,
-      L0_mm: +this.state.L0_mm,
-      Ls_mm: +this.state.Ls_mm,
+      ...numericValues,
     };
 
     mainSchema
@@ -95,9 +128,9 @@ class App extends React.Component {
           if (!this.state.inputError.main) {
             axios
               .post(
-                "https://vhdufpz2ne.execute-api.us-east-1.amazonaws.com/attempt1_python",
+                'https://vhdufpz2ne.execute-api.us-east-1.amazonaws.com/attempt1_python',
                 this.state.mainReqData,
-                { timeout: 3500, params: { CALCULATION: "MAIN" } }
+                { timeout: 3500, params: { CALCULATION: 'MAIN' } }
               )
               .then((rep) => {
                 this.setState({
@@ -121,8 +154,12 @@ class App extends React.Component {
   }
 
   validateStatic(cb) {
+    let numericValue = this.state.Fs_N;
+    numericValue = _.trim(numericValue);
+    numericValue = numericValue === '' ? null : +numericValue;
+
     const staticReqData = {
-      Fs_N: +this.state.Fs_N,
+      Fs_N: numericValue,
     };
 
     staticSchema
@@ -148,12 +185,11 @@ class App extends React.Component {
           if (!this.state.inputError.static) {
             axios
               .post(
-                "https://vhdufpz2ne.execute-api.us-east-1.amazonaws.com/attempt1_python",
+                'https://vhdufpz2ne.execute-api.us-east-1.amazonaws.com/attempt1_python',
                 this.state.staticReqData,
-                { timeout: 3500, params: { CALCULATION: "STATIC" } }
+                { timeout: 3500, params: { CALCULATION: 'STATIC' } }
               )
               .then((rep) => {
-                console.log(rep)
                 this.setState({
                   staticResults: rep.data,
                   loading: { static: false },
@@ -167,337 +203,110 @@ class App extends React.Component {
                 });
               });
           } else {
-            this.setState({ loading: { static: false }})
+      
+            this.setState({ loading: { static: false } });
           }
         });
       }
     );
   }
 
+  validateFatigue(cb) {
+		let numericValues = _.pick(this.state, ['F_max_N', 'F_min_N']);
+		numericValues = _.mapValues(numericValues, value => _.trim(value));
+		numericValues = _.mapValues(numericValues, value => value === "" ? null : +value);
+
+		const fatigueReqData = {...numericValues};
+
+		fatigueSchema.validate(fatigueReqData)
+		.then(() => {
+			this.setState({ inputError: { fatigue: false }, fatigueReqData}, cb);
+		})
+		.catch(() => {
+			this.setState({ inputError: { fatigue: true }, fatigueReqData}, cb);
+		});
+	}
+
+  calculateFatigue() {
+		this.setState({
+			wasValidated: { fatigue: true },
+			fatigueResults: { ... fatigueResultsTemplate },
+			loading: { fatigue: true },
+			backendError: { fatigue: false }
+		}, () => {
+			this.validateFatigue(() => {
+				if (!this.state.inputError.fatigue) {
+					axios.post(
+						'https://vhdufpz2ne.execute-api.us-east-1.amazonaws.com/attempt1_python',
+						this.state.fatigueReqData,
+						{ timeout: 3500, params: { CALCULATION: 'FATIGUE' }}
+					)
+					.then(rep => {
+						this.setState({
+							fatigueResults: rep.data,
+							loading: { fatigue: false }
+						})
+					})
+					.catch(err => {
+						console.log(err);
+						this.setState({
+							backendError: { fatigue: true },
+							loading: { fatigue: false },
+						});
+					})
+				} else {
+					this.setState({ loading: { fatigue: false }});
+				}
+			})
+		})
+	}
+
   render() {
     return (
-      <div id="app">
-        <div className="container py-4">
-          <div className="p-5 mb-4 bg-light rounded-3">
-            <div className="container-fluid py-5">
-              <h1 className="display-5 fw-bold">ME35401 Spring Calculator</h1>
-              <p className="col-md-8 fs-4">
+      <div id='app'>
+        <div className='container py-4'>
+          <div className='p-5 mb-4 bg-light rounded-3'>
+            <div className='container-fluid py-5'>
+              <h1 className='display-5 fw-bold'>ME35401 Spring Calculator</h1>
+              <p className='col-md-8 fs-4'>
                 By Peter Salisbury and Nicolas Fransen
               </p>
-              <a href="#start" className="btn btn-primary btn-lg" type="button">
+              <a href='#start' className='btn btn-primary btn-lg' type='button'>
                 Get Started
               </a>
             </div>
           </div>
 
-          <div className="row align-items-md-stretch" id="start">
-            <div className="col-md-6 mt-2">
-              <div className="h-40 p-3 text-white bg-dark rounded-3">
-                <h3>Select End Type</h3>
-                <Select
-                  onChange={(endType) => this.setState({ endType: endType })}
-                  className="text-black"
-                  options={endTypes}
-                />
-              </div>
-            </div>
-            <div className="col-md-6 mt-2">
-              <div className="h-40 p-3 bg-light border rounded-3">
-                <h3>Select Material</h3>
-                <Select
-                  onChange={(mat) => this.setState({ material: mat })}
-                  className="text-black"
-                  options={materials}
-                />
-              </div>
-            </div>
+          <Main
+            selectUpdate={this.selectUpdate}
+            eventUpdate={this.eventUpdate}
+            calculateMain={this.calculateMain}
+            wasValidated={this.state.wasValidated}
+            inputError={this.state.inputError}
+            backendError={this.state.backendError}
+            loading={this.state.loading}
+            mainResults={this.state.mainResults}
+          />
 
-            <div className="col-md-3 mt-2">
-              <div className="h-40 p-3 text-white bg-dark rounded-3">
-                <h3 htmlFor="exampleFormControlInput1" className="form-label">
-                  Wire Diameter
-                </h3>
-                <div className="input-group">
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="exampleFormControlInput1"
-                    placeholder="Ex: 2.5"
-                    onChange={(ev) =>
-                      this.setState({ wireDiameter_mm: ev.target.value })
-                    }
-                  />
-                  <span className="input-group-text">mm</span>
-                </div>
-              </div>
-            </div>
+          <Static
+            eventUpdate={this.eventUpdate}
+            calculateStatic={this.calculateStatic}
+            wasValidated={this.state.wasValidated}
+            inputError={this.state.inputError}
+            backendError={this.state.backendError}
+            loading={this.state.loading}
+            staticResults={this.state.staticResults}
+          />
 
-            <div className="col-md-3 mt-2">
-              <div className="h-40 p-3 bg-light border rounded-3">
-                <h3 htmlFor="exampleFormControlInput1" className="form-label">
-                  Outer Diameter
-                </h3>
-                <div className="input-group">
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="exampleFormControlInput1"
-                    placeholder="Ex: 5.0"
-                    onChange={(ev) => this.setState({ OD_mm: ev.target.value })}
-                  />
-                  <span className="input-group-text">mm</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="col-md-3 mt-2">
-              <div className="h-40 p-3 text-white bg-dark rounded-3">
-                <h3 htmlFor="exampleFormControlInput1" className="form-label">
-                  Free Length{" "}
-                  <i>
-                    L<sub>0</sub>
-                  </i>
-                </h3>
-                <div className="input-group">
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="exampleFormControlInput1"
-                    placeholder="Ex: 20.0"
-                    onChange={(ev) => this.setState({ L0_mm: ev.target.value })}
-                  />
-                  <span className="input-group-text">mm</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="col-md-3 mt-2">
-              <div className="h-40 p-3 bg-light border rounded-3">
-                <h3 htmlFor="exampleFormControlInput1" className="form-label">
-                  Solid Length{" "}
-                  <i>
-                    L<sub>s</sub>
-                  </i>
-                </h3>
-                <div className="input-group">
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="exampleFormControlInput1"
-                    placeholder="Ex: 25.0"
-                    onChange={(ev) => this.setState({ Ls_mm: ev.target.value })}
-                  />
-                  <span className="input-group-text">mm</span>
-                </div>
-              </div>
-            </div>
-
-            <div className={"row justify-content-center"} noValidate>
-              <div className="col-md-3 text-center mt-4">
-                <a
-                  className="btn btn-primary btn-lg form-control"
-                  onClick={this.calculateMain}
-                >
-                  Calculate
-                </a>
-
-                {this.state.wasValidated.main ? (
-                  this.state.inputError.main ? (
-                    <div className="text-danger">Error: Check inputs</div>
-                  ) : (
-                    <></>
-                  )
-                ) : (
-                  <></>
-                )}
-
-                {this.state.backendError.main ? (
-                  <div className="text-danger">
-                    Error: Cannot Calculate (backend error)
-                  </div>
-                ) : (
-                  <></>
-                )}
-
-                {this.state.loading.main ? (
-                  <div className="my-2">
-                    <img src="assets/spinner.svg" />
-                  </div>
-                ) : (
-                  <div className="my-2 invisible">
-                    <img src="assets/spinner.svg" />
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <h1 className="display-2">Results</h1>
-            <hr />
-
-            <div className="row mt-1 justify-content-center">
-              <div className="col-md-8">
-                <table className="table table-bordered table-hover">
-                  <thead>
-                    <tr>
-                      <th scope="col">Property</th>
-                      <th scope="col">Value</th>
-                      <th scope="col">Unit</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td scope="row">
-                        Pitch <i>p</i>
-                      </td>
-                      <td>{this.state.mainResults.p}</td>
-                      <td>mm</td>
-                    </tr>
-                    <tr>
-                      <td scope="row">
-                        Total # of coils{" "}
-                        <i>
-                          N<sub>t</sub>
-                        </i>
-                      </td>
-                      <td>{this.state.mainResults.nt}</td>
-                      <td>#</td>
-                    </tr>
-                    <tr>
-                      <td scope="row">
-                        Number of active coils{" "}
-                        <i>
-                          N<sub>a</sub>
-                        </i>
-                      </td>
-                      <td>{this.state.mainResults.na}</td>
-                      <td>#</td>
-                    </tr>
-                    <tr>
-                      <td scope="row">
-                        Spring rate <i>k</i>
-                      </td>
-                      <td>{this.state.mainResults.k}</td>
-                      <td>N/m</td>
-                    </tr>
-                    <tr>
-                      <td scope="row">
-                        Force needed to compress to{" "}
-                        <i>
-                          L<sub>s</sub>
-                        </i>
-                      </td>
-                      <td>{this.state.mainResults.F_ls}</td>
-                      <td>N</td>
-                    </tr>
-                    <tr>
-                      <td scope="row">
-                        Factor of safety <i>n</i> when compressed to{" "}
-                        <i>
-                          L<sub>s</sub>
-                        </i>
-                      </td>
-                      <td>{this.state.mainResults.n_ls}</td>
-                      <td></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <div className="container px-5">
-              <h1 className="display-6">Static Load Analysis</h1>
-              <hr />
-            </div>
-            <div className="row mt-1 justify-content-center">
-              <div className="col-md-3 mt-2">
-                <div className="h-40 p-3 bg-light border rounded-3">
-                  <h3 htmlFor="exampleFormControlInput1" className="form-label">
-                    Static Load{" "}
-                    <i>
-                      F<sub>s</sub>
-                    </i>
-                  </h3>
-                  <div className="input-group">
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="exampleFormControlInput1"
-                      placeholder="Ex: 110.2"
-                      onChange={(ev) =>
-                        this.setState({ Fs_N: ev.target.value })
-                      }
-                    />
-                    <span className="input-group-text">N</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="row justify-content-center">
-                <div className="col-md-3 text-center mt-4">
-                  <a
-                    className="btn btn-primary btn-lg form-control"
-                    onClick={this.calculateStatic}
-                  >
-                    Calculate
-                  </a>
-
-                  {this.state.wasValidated.static ? (
-                    this.state.inputError.static ? (
-                      <div className="text-danger">Error: Check inputs</div>
-                    ) : (
-                      <></>
-                    )
-                  ) : (
-                    <></>
-                  )}
-
-                  {this.state.backendError.static ? (
-                    <div className="text-danger">
-                      Error: Cannot Calculate (backend error)
-                    </div>
-                  ) : (
-                    <></>
-                  )}
-
-                  {this.state.loading.static ? (
-                    <div className="my-2">
-                      <img src="assets/spinner.svg" />
-                    </div>
-                  ) : (
-                    <div className="my-2 invisible">
-                      <img src="assets/spinner.svg" />
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div className="row mt-2 justify-content-center">
-                <div className="col-md-6">
-                  <table className="table table-bordered table-hover">
-                    <thead>
-                      <tr>
-                        <th scope="col">Property</th>
-                        <th scope="col">Value</th>
-                        <th scope="col">Unit</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td scope="row">
-                          Factor of Safety{" "}
-                          <i>
-                            n<sub>s</sub>
-                          </i>
-                        </td>
-                        <td>{this.state.staticResults.n_s}</td>
-                        <td></td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
+          <Fatigue
+            eventUpdate={this.eventUpdate}
+            calculateFatigue={this.calculateFatigue}
+            wasValidated={this.state.wasValidated}
+            inputError={this.state.inputError}
+            backendError={this.state.backendError}
+            loading={this.state.loading}
+            fatigueResults={this.state.fatigueResults}
+          />
         </div>
       </div>
     );

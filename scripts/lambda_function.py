@@ -1,31 +1,38 @@
 import json
+from calculations import calculateMain, calculateStatic, calculateFatigue
 
 def lambda_handler(event, context):
-
+    print("Full event JSON:")
+    print(json.dumps(event))
+    
     reqContext = event["requestContext"]["http"]["method"]
-
+    print("ReqContext: " + reqContext)
+    
     if reqContext == "POST":
         calcSelection = event["queryStringParameters"]["CALCULATION"]
         print("calcSelection: " + calcSelection)
-
         calcData = json.loads(event["body"])
         print(calcData)
-
-        responseData = {
-            "p": 13,
-            "nt": 25,
-            "na": 1132,
-            "k": 321,
-            "F_ls": 3132,
-            "n_ls": 123,
-        }
+        
+        responseData = None
+        
+        if calcSelection == "MAIN":
+            responseData = calculateMain(calcData)
+        elif calcSelection == "STATIC":
+            responseData = calculateStatic(calcData)
+        elif calcSelection == "FATIGUE":
+            responseData = calculateFatigue(calcData)
+        else: 
+            return {
+                "statusCode": 400
+            }
+        
         return {
             "statusCode": 200,
-            "body": responseData
+            "body": json.dumps(responseData)
         }
 
     else:
         return {
-            "statusCode": 200,
-            "body": "Responding to HTTP " + reqContext,
+            "statusCode": 200
         }
