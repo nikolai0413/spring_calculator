@@ -50,7 +50,7 @@ export const endTypes = [
 
 export const endTypes_labels = endTypes.map((obj) => obj.label);
 
-export const mainSchema = object().shape({
+export const mainRequestSchema = object().shape({
 	material: string().oneOf(materials_labels).required(),
 	endType: string().oneOf(endTypes_labels).required(),
 	wireDiameter_mm: number().positive().required(),
@@ -68,19 +68,33 @@ export const mainResultsTemplate = {
 	n_ls_: '',
 };
 
-export const staticSchema = object().shape({
+export const staticRequestSchema = object().shape({
+	material: string().oneOf(materials_labels).required(),
+	endType: string().oneOf(endTypes_labels).required(),
+	wireDiameter_mm: number().positive().required(),
+	OD_mm: number().positive().required(),
+	L0_mm: number().positive().required(),
+	Ls_mm: number().positive().required(),
+
 	Fs_N: number().required(),
 });
 
 export const staticResultsTemplate = {
-	n_s: '',
+	n_s_: '',
 };
 
-export const fatigueSchema = object().shape({
+export const fatigueRequestSchema = object().shape({
+	material: string().oneOf(materials_labels).required(),
+	endType: string().oneOf(endTypes_labels).required(),
+	wireDiameter_mm: number().positive().required(),
+	OD_mm: number().positive().required(),
+	L0_mm: number().positive().required(),
+	Ls_mm: number().positive().required(),
+
 	F_max_N: number().required(),
 	F_min_N: number().required(),
 });
 
 export const fatigueResultsTemplate = {
-	n_f: '',
+	n_f_: '',
 };

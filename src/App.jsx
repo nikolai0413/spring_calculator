@@ -1,10 +1,10 @@
 import {
   mainResultsTemplate,
-  mainSchema,
+  mainRequestSchema,
   staticResultsTemplate,
-  staticSchema,
+  staticRequestSchema,
   fatigueResultsTemplate,
-  fatigueSchema,
+  fatigueRequestSchema,
 } from './data.js';
 
 import _ from 'lodash';
@@ -105,7 +105,7 @@ class App extends React.Component {
       ...numericValues,
     };
 
-    mainSchema
+    mainRequestSchema
       .validate(mainReqData)
       .then(() => {
         this.setState({ inputError: { main: false }, mainReqData }, cb);
@@ -154,15 +154,25 @@ class App extends React.Component {
   }
 
   validateStatic(cb) {
-    let numericValue = this.state.Fs_N;
-    numericValue = _.trim(numericValue);
-    numericValue = numericValue === '' ? null : +numericValue;
+    let numericValues = _.pick(this.state, [
+      'wireDiameter_mm',
+      'OD_mm',
+      'L0_mm',
+      'Ls_mm',
+      'Fs_N',
+    ]);
+    numericValues = _.mapValues(numericValues, (value) => _.trim(value));
+    numericValues = _.mapValues(numericValues, (value) =>
+      value === '' ? null : +value
+    );
 
     const staticReqData = {
-      Fs_N: numericValue,
+      material: this.state.material?.label || null,
+      endType: this.state.endType?.label || null,
+      ...numericValues,
     };
 
-    staticSchema
+    staticRequestSchema
       .validate(staticReqData)
       .then(() => {
         this.setState({ inputError: { static: false }, staticReqData }, cb);
@@ -203,7 +213,6 @@ class App extends React.Component {
                 });
               });
           } else {
-      
             this.setState({ loading: { static: false } });
           }
         });
@@ -212,54 +221,72 @@ class App extends React.Component {
   }
 
   validateFatigue(cb) {
-		let numericValues = _.pick(this.state, ['F_max_N', 'F_min_N']);
-		numericValues = _.mapValues(numericValues, value => _.trim(value));
-		numericValues = _.mapValues(numericValues, value => value === "" ? null : +value);
+    let numericValues = _.pick(this.state,[
+      'wireDiameter_mm',
+      'OD_mm',
+      'L0_mm',
+      'Ls_mm',
+			'F_max_N',
+			'F_min_N'
+		]);
+    numericValues = _.mapValues(numericValues, (value) => _.trim(value));
+    numericValues = _.mapValues(numericValues, (value) =>
+      value === '' ? null : +value
+    );
 
-		const fatigueReqData = {...numericValues};
+    const fatigueReqData = {
+			material: this.state.material?.label || null,
+      endType: this.state.endType?.label || null,
+			...numericValues
+		};
 
-		fatigueSchema.validate(fatigueReqData)
-		.then(() => {
-			this.setState({ inputError: { fatigue: false }, fatigueReqData}, cb);
-		})
-		.catch(() => {
-			this.setState({ inputError: { fatigue: true }, fatigueReqData}, cb);
-		});
-	}
+    fatigueRequestSchema
+      .validate(fatigueReqData)
+      .then(() => {
+        this.setState({ inputError: { fatigue: false }, fatigueReqData }, cb);
+      })
+      .catch(() => {
+        this.setState({ inputError: { fatigue: true }, fatigueReqData }, cb);
+      });
+  }
 
   calculateFatigue() {
-		this.setState({
-			wasValidated: { fatigue: true },
-			fatigueResults: { ... fatigueResultsTemplate },
-			loading: { fatigue: true },
-			backendError: { fatigue: false }
-		}, () => {
-			this.validateFatigue(() => {
-				if (!this.state.inputError.fatigue) {
-					axios.post(
-						'https://vhdufpz2ne.execute-api.us-east-1.amazonaws.com/attempt1_python',
-						this.state.fatigueReqData,
-						{ timeout: 3500, params: { CALCULATION: 'FATIGUE' }}
-					)
-					.then(rep => {
-						this.setState({
-							fatigueResults: rep.data,
-							loading: { fatigue: false }
-						})
-					})
-					.catch(err => {
-						console.log(err);
-						this.setState({
-							backendError: { fatigue: true },
-							loading: { fatigue: false },
-						});
-					})
-				} else {
-					this.setState({ loading: { fatigue: false }});
-				}
-			})
-		})
-	}
+    this.setState(
+      {
+        wasValidated: { fatigue: true },
+        fatigueResults: { ...fatigueResultsTemplate },
+        loading: { fatigue: true },
+        backendError: { fatigue: false },
+      },
+      () => {
+        this.validateFatigue(() => {
+          if (!this.state.inputError.fatigue) {
+            axios
+              .post(
+                'https://vhdufpz2ne.execute-api.us-east-1.amazonaws.com/attempt1_python',
+                this.state.fatigueReqData,
+                { timeout: 3500, params: { CALCULATION: 'FATIGUE' } }
+              )
+              .then((rep) => {
+                this.setState({
+                  fatigueResults: rep.data,
+                  loading: { fatigue: false },
+                });
+              })
+              .catch((err) => {
+                console.log(err);
+                this.setState({
+                  backendError: { fatigue: true },
+                  loading: { fatigue: false },
+                });
+              });
+          } else {
+            this.setState({ loading: { fatigue: false } });
+          }
+        });
+      }
+    );
+  }
 
   render() {
     return (

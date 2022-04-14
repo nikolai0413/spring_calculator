@@ -88,7 +88,7 @@ export default class Static extends Component {
                         n<sub>s</sub>
                       </i>
                     </td>
-                    <td>{this.props.staticResults.n_s}</td>
+                    <td>{this.props.staticResults.n_s_}</td>
                     <td></td>
                   </tr>
                 </tbody>
