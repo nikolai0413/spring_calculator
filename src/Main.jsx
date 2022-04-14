@@ -6,6 +6,7 @@ import Select from 'react-select';
 export default class extends Component {
 	constructor(props){
 		super(props);
+		
 	}
 
   render() {
@@ -175,7 +176,7 @@ export default class extends Component {
                   <td scope='row'>
                     Pitch <i>p</i>
                   </td>
-                  <td>{this.props.mainResults.p}</td>
+                  <td>{this.props.mainResults.pitch_mm}</td>
                   <td>mm</td>
                 </tr>
                 <tr>
@@ -185,24 +186,24 @@ export default class extends Component {
                       N<sub>t</sub>
                     </i>
                   </td>
-                  <td>{this.props.mainResults.nt}</td>
+                  <td>{this.props.mainResults.nt_}</td>
                   <td>#</td>
                 </tr>
                 <tr>
                   <td scope='row'>
-                    Number of active coils{' '}
+                    # of active coils{' '}
                     <i>
                       N<sub>a</sub>
                     </i>
                   </td>
-                  <td>{this.props.mainResults.na}</td>
+                  <td>{this.props.mainResults.na_}</td>
                   <td>#</td>
                 </tr>
                 <tr>
                   <td scope='row'>
                     Spring rate <i>k</i>
                   </td>
-                  <td>{this.props.mainResults.k}</td>
+                  <td>{this.props.mainResults.k_N_m}</td>
                   <td>N/m</td>
                 </tr>
                 <tr>
@@ -212,7 +213,7 @@ export default class extends Component {
                       L<sub>s</sub>
                     </i>
                   </td>
-                  <td>{this.props.mainResults.F_ls}</td>
+                  <td>{this.props.mainResults.F_ls_N}</td>
                   <td>N</td>
                 </tr>
                 <tr>
@@ -222,7 +223,7 @@ export default class extends Component {
                       L<sub>s</sub>
                     </i>
                   </td>
-                  <td>{this.props.mainResults.n_ls}</td>
+                  <td>{this.props.mainResults.n_ls_}</td>
                   <td></td>
                 </tr>
               </tbody>
