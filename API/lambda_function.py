@@ -17,13 +17,18 @@ def lambda_handler(event, context=None):
             return {"statusCode": 200}
 
         elif httpReqType == "POST":
+            responseData = performCalculation(calcFunction, body)
+
             return {
                 "statusCode": 200,
-                "body": json.dumps(performCalculation(calcFunction, body)),
+                "body": json.dumps(responseData),
             }
 
     except BadRequestError as err:
-        return {"statusCode": 400, "ErrorMessage": err}
+        return {"statusCode": 400, "ErrorMessage": repr(err)}
+
+    except TypeError as err:
+        return {"statusCode": 400, "ErrorMessage": repr(err)}
 
 
 def extractEventInfo(event):
