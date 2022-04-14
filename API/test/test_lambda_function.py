@@ -1,7 +1,7 @@
 import json
 import pytest
-from API import sampleData
-from API.lambda_function import extractEventInfo, BadRequestError, lambda_handler
+import sampleData
+from lambda_function import extractEventInfo, BadRequestError, lambda_handler
 
 def test_extractEventInfo():
 	assert extractEventInfo(sampleData.main.options) == ("OPTIONS", "MAIN", None)
