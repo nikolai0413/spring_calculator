@@ -1,5 +1,5 @@
 import json
-from calculations import calculateMain, calculateStatic, calculateFatigue
+from calculations import *
 
 def lambda_handler(event, context):
     print("Full event JSON:")
