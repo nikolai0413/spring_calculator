@@ -1,17 +1,16 @@
-def main(params):
-	print("Calclating Main")
+def main(*args, material, endType, wireDiameter_mm, OD_mm, L0_mm, Ls_mm):
+    """Performs primary or 'main' calculation for the app. Returns python dict"""
+
+		# TODO calculation
 
 
-
-
-	responseData = {
-	"p": params['wireDiameter_mm'] + 1,
-	"nt": params['wireDiameter_mm'] + 2,
-	"na": params['wireDiameter_mm'] + 3,
-	"k": params['wireDiameter_mm'] + 4,
-	"F_ls": params['wireDiameter_mm'] + 5,
-	"n_ls": params['wireDiameter_mm'] + 6,
-	}
-
-
-	return responseData
+    responseData = {
+        "pitch_mm": wireDiameter_mm,
+        "nt_": OD_mm,
+        "na_": L0_mm,
+        "k_N_m": Ls_mm,
+        "F_ls_N": wireDiameter_mm,
+        "n_ls_": wireDiameter_mm,
+    }
+		
+    return responseData

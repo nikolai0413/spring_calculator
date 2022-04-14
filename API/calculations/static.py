@@ -1,8 +1,12 @@
-def static(params):
-	print("Calculating Satic")
-	print(params)
+from . import main
+
+def static(*args, Fs_N, **kwargs):
+	"""Calculates static factor of safety. Calls main to recalculate spring parameters, then peforms factor of safety calculation"""
+
+	mainCalc = main(**kwargs)
+
 	responseData = {
-			"n_s": params["Fs_N"] + 1
+			"n_s_": Fs_N
 	}
-	print(responseData)
+
 	return responseData
