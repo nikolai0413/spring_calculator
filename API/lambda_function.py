@@ -1,5 +1,5 @@
 import json
-from calculations import *
+import calculations as calc
 
 def lambda_handler(event, context):
     print("Full event JSON:")
@@ -17,11 +17,11 @@ def lambda_handler(event, context):
         responseData = None
         
         if calcSelection == "MAIN":
-            responseData = calculateMain(calcData)
+            responseData = calc.main(calcData)
         elif calcSelection == "STATIC":
-            responseData = calculateStatic(calcData)
+            responseData = calc.static(calcData)
         elif calcSelection == "FATIGUE":
-            responseData = calculateFatigue(calcData)
+            responseData = calc.fatigue(calcData)
         else: 
             return {
                 "statusCode": 400
