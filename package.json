@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack serve --config ./webpack.config.js --mode development",
-    "test": "echo \"No test specified\" && exit 0",
+    "test": "cd API && pytest",
     "build": "webpack"
   },
   "keywords": [],
