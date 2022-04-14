@@ -1,9 +1,12 @@
 def main(*args, material, endType, wireDiameter_mm, OD_mm, L0_mm, Ls_mm):
     """Performs primary or 'main' calculation for the app. Returns python dict"""
 
+    
 		# TODO calculation
 
 
+
+    # TODO update return value
     responseData = {
         "pitch_mm": wireDiameter_mm,
         "nt_": OD_mm,

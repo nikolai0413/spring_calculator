@@ -1,4 +1,4 @@
-from calculations import main
+from API.calculations import main
 from unittest import TestCase
 from random import randint, uniform
 

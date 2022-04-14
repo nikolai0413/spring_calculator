@@ -1,5 +1,5 @@
 import json
-import calculations as calc
+from API import calculations as calc
 
 
 class BadRequestError(Exception):

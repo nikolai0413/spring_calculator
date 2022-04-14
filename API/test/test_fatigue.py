@@ -1,4 +1,4 @@
-from calculations import fatigue
+from API.calculations import fatigue
 from unittest import TestCase
 from random import randint, uniform
 from .test_main import getMainArgs

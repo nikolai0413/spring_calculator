@@ -1,5 +1,5 @@
 from .test_main import getMainArgs
-from calculations import static
+from API.calculations import static
 from random import uniform
 from unittest import TestCase
 

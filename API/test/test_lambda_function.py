@@ -1,7 +1,7 @@
 import json
 import pytest
-import sampleData
-from lambda_function import extractEventInfo, BadRequestError, lambda_handler
+from API import sampleData
+from API.lambda_function import extractEventInfo, BadRequestError, lambda_handler
 
 def test_extractEventInfo():
 	assert extractEventInfo(sampleData.main.options) == ("OPTIONS", "MAIN", None)
@@ -22,7 +22,6 @@ def test_extractEventInfo():
 	with pytest.raises(BadRequestError):
 		extractEventInfo(sampleData.badReqs.postNoBody)
 
-@pytest.mark.skip
 def test_lambda_handler():
 
 	assert lambda_handler(sampleData.main.options) == { "statusCode": 200 }
