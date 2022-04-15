@@ -99,7 +99,7 @@ export default class Fatigue extends Component {
                         n<sub>f</sub>
                       </i>
                     </td>
-                    <td>{this.props.fatigueResults.n_f_}</td>
+                    <td>{this.props.fatigueResults.nFatigue_}</td>
                     <td></td>
                   </tr>
                 </tbody>

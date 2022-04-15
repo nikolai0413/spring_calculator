@@ -23,7 +23,7 @@ export default class Static extends Component {
                   className='form-control'
                   id='exampleFormControlInput1'
                   placeholder='Ex: 110.2'
-									onChange={this.props.eventUpdate('Fs_lbf')}
+									onChange={this.props.eventUpdate('Fstatic_lbf')}
                 />
                 <span className='input-group-text'>lbf</span>
               </div>
@@ -87,7 +87,7 @@ export default class Static extends Component {
                         n<sub>s</sub>
                       </i>
                     </td>
-                    <td>{this.props.staticResults.n_s_}</td>
+                    <td>{this.props.staticResults.nStatic_}</td>
                     <td></td>
                   </tr>
                 </tbody>

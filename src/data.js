@@ -4,57 +4,57 @@ export const apiUrl = "https://bsthlri5j1.execute-api.us-east-1.amazonaws.com/sp
 
 export const materials = [
 	{
-		value: 1,
+		value: 'A228',
 		label: 'Music wire (ASTM No. A228)',
 	},
 	{
-		value: 2,
+		value: 'A227',
 		label: 'Hard-drawn wire (ASTM No. A227)',
 	},
 	{
-		value: 3,
+		value: 'A232',
 		label: 'Chrome-vanadium wire (ASTM No. A232)',
 	},
 	{
-		value: 4,
+		value: 'A401',
 		label: 'Chrome-silicon wire (ASTM No. A401)',
 	},
 	{
-		value: 5,
+		value: 'A313',
 		label: '302 stainless wire (ASTM No. A313)',
 	},
 	{
-		value: 6,
+		value: 'B159',
 		label: 'Phosphor-bronze wire (ASTM No. B159)',
 	},
 ];
 
-export const materials_labels = materials.map((mat) => mat.label);
+const materials_values = materials.map((mat) => mat.value);
 
 export const endTypes = [
 	{
-		value: 1,
+		value: 'plain',
 		label: 'Plain',
 	},
 	{
-		value: 2,
+		value: 'plainAndGround',
 		label: 'Plain and ground',
 	},
 	{
-		value: 3,
+		value: 'squaredOrClosed',
 		label: 'Squared or closed',
 	},
 	{
-		value: 4,
+		value: 'squaredAndGround',
 		label: 'Squared and ground',
 	},
 ];
 
-export const endTypes_labels = endTypes.map((obj) => obj.label);
+const endTypes_values = endTypes.map((obj) => obj.value);
 
 export const mainRequestSchema = object().shape({
-	material: string().oneOf(materials_labels).required(),
-	endType: string().oneOf(endTypes_labels).required(),
+	material: string().oneOf(materials_values).required(),
+	endType: string().oneOf(endTypes_values).required(),
 	wireDiameter_in: number().positive().required(),
 	OD_in: number().positive().required(),
 	L0_in: number().positive().required(),
@@ -66,28 +66,28 @@ export const mainResultsTemplate = {
 	nt_: '',
 	na_: '',
 	k_lbf_in: '',
-	Fls_lbf: '',
-	n_ls_: '',
+	fShut_lbf: '',
+	nShut_: '',
 };
 
 export const staticRequestSchema = object().shape({
-	material: string().oneOf(materials_labels).required(),
-	endType: string().oneOf(endTypes_labels).required(),
+	material: string().oneOf(materials_values).required(),
+	endType: string().oneOf(endTypes_values).required(),
 	wireDiameter_in: number().positive().required(),
 	OD_in: number().positive().required(),
 	L0_in: number().positive().required(),
 	Ls_in: number().positive().required(),
 
-	Fs_lbf: number().required(),
+	Fstatic_lbf: number().required(),
 });
 
 export const staticResultsTemplate = {
-	n_s_: '',
+	nStatic_: '',
 };
 
 export const fatigueRequestSchema = object().shape({
-	material: string().oneOf(materials_labels).required(),
-	endType: string().oneOf(endTypes_labels).required(),
+	material: string().oneOf(materials_values).required(),
+	endType: string().oneOf(endTypes_values).required(),
 	wireDiameter_in: number().positive().required(),
 	OD_in: number().positive().required(),
 	L0_in: number().positive().required(),
@@ -98,5 +98,5 @@ export const fatigueRequestSchema = object().shape({
 });
 
 export const fatigueResultsTemplate = {
-	n_f_: '',
+	nFatigue_: '',
 };

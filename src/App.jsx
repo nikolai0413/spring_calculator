@@ -29,7 +29,7 @@ class App extends React.Component {
       L0_in: undefined,
       Ls_in: undefined,
 
-      Fs_lbbf: undefined,
+      Fstatic_lbf: undefined,
 
       F_max_lbf: undefined,
       F_min_lbf: undefined,
@@ -101,8 +101,8 @@ class App extends React.Component {
 
     // unpack data
     const mainReqData = {
-      material: this.state.material?.label || null,
-      endType: this.state.endType?.label || null,
+      material: this.state.material?.value || null,
+      endType: this.state.endType?.value || null,
       ...numericValues,
     };
 
@@ -160,7 +160,7 @@ class App extends React.Component {
       'OD_in',
       'L0_in',
       'Ls_in',
-      'Fs_lbf',
+      'Fstatic_lbf',
     ]);
     numericValues = _.mapValues(numericValues, (value) => _.trim(value));
     numericValues = _.mapValues(numericValues, (value) =>
@@ -168,8 +168,8 @@ class App extends React.Component {
     );
 
     const staticReqData = {
-      material: this.state.material?.label || null,
-      endType: this.state.endType?.label || null,
+      material: this.state.material?.value || null,
+      endType: this.state.endType?.value || null,
       ...numericValues,
     };
 
@@ -236,8 +236,8 @@ class App extends React.Component {
     );
 
     const fatigueReqData = {
-			material: this.state.material?.label || null,
-      endType: this.state.endType?.label || null,
+			material: this.state.material?.value || null,
+      endType: this.state.endType?.value || null,
 			...numericValues
 		};
 

@@ -170,7 +170,7 @@ export default class extends Component {
                   <td scope='row'>
                     Pitch <i>p</i>
                   </td>
-                  <td>{this.props.mainResults.pitch_in}</td>
+                  <td>{this.props.mainResults.pitch_in_rev}</td>
                   <td>in</td>
                 </tr>
                 <tr>
@@ -207,7 +207,7 @@ export default class extends Component {
                       L<sub>s</sub>
                     </i>
                   </td>
-                  <td>{this.props.mainResults.Fls_lbf}</td>
+                  <td>{this.props.mainResults.fShut_lbf}</td>
                   <td>lbf</td>
                 </tr>
                 <tr>
@@ -217,7 +217,7 @@ export default class extends Component {
                       L<sub>s</sub>
                     </i>
                   </td>
-                  <td>{this.props.mainResults.n_ls_}</td>
+                  <td>{this.props.mainResults.nShut_}</td>
                   <td></td>
                 </tr>
               </tbody>
