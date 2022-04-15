@@ -2,7 +2,7 @@ from calculations import fatigue
 from unittest import TestCase
 from random import randint, uniform
 from .test_main import getMainArgs
-
+import pytest
 
 fatigueResultKeys = ['n_f_']
 
@@ -15,6 +15,7 @@ def getFatigueArgs():
 
     return fatigueArgs
 
+@pytest.mark.skip
 def test_fatigue():
     fatigueArgs = getFatigueArgs()
     fatigueReturn = fatigue(**fatigueArgs)
