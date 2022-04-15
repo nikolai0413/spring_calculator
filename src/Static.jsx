@@ -14,7 +14,7 @@ export default class Static extends Component {
               <h3 htmlFor='exampleFormControlInput1' className='form-label'>
                 Static Load{' '}
                 <i>
-                  F<sub>s</sub>
+                  F<sub>static</sub>
                 </i>
               </h3>
               <div className='input-group'>
