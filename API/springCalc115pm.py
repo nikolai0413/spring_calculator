@@ -10,11 +10,11 @@ import numpy as np
 # Material
 # Wire diameter
 # Outer diameter
-# Free length (L0)
-# Solid length (Ls)
+# Free length (L0_in)
+# Solid length (Ls_in)
 
 #OUTPUTS
-# The pitch, p
+# The pitch_in_rev, p
 # The number of total coils (Nt) and the number of active coils (Na)
 # The spring rate, k
 # The force needed to compress the spring to its solid length and the factor of safety for static yielding
@@ -23,62 +23,85 @@ import numpy as np
 # For a cyclic load (i.e., Fmax and Fmin), the Spring Calculator should find the factor of safety for infinite life.
 
 
+# ************** INPUTS ****************
+material  = 'A313'
+endType = 'squaredAndGround'
+wireDiameter_in =  0.1
+OD_in = 9/16
+L0_in = 4 + 3/8
+Ls_in = wireDiameter_in * 23; # for example 10-4
 
-material  = 'A228'
-d = 0.1 #in
-D = 1.0 
 
-# ---------------- End Type ---------------- 
-endType = 'plain'
+fInput_lbf = 30
 
-nEnd = 0
-nTotal = 0
-nActive = 0
+fMax_lbf = 35
+fMin_lbf = 5
 
-Ls = 5.0
-L0 = 8.0
-pitch = 0
+# ******************************
+
+
+
+
+
+# ************** OUTPUTS ****************
+
+nt_ = None
+na_ = None
+pitch_in_rev = None
+fShut_lbf = None
+nFatigue_ = None
+
+# ******************************
+
+nEnd_ = None
+
+
+# perform outer to mean adjustment
+meanDiam_in = OD_in - wireDiameter_in;
 
 if endType == 'plain':
     print(endType)
-    nEnd = 0
-    nTotal = Ls/d-1
-    nActive = nTotal - nEnd
-    pitch = (L0-d)/nActive
+    nEnd_ = 0
+    nt_ = Ls_in/wireDiameter_in-1
+    na_ = nt_ - nEnd_
+    pitch_in_rev = (L0_in-wireDiameter_in)/na_
 
 elif endType == 'plainAndGround':
     print(endType)
-    nEnd = 1
-    nTotal = Ls/d
-    nActive = nTotal - nEnd
-    pitch = (L0)/(nActive+1)
+    nEnd_ = 1
+    nt_ = Ls_in/wireDiameter_in
+    na_ = nt_ - nEnd_
+    pitch_in_rev = (L0_in)/(na_+1)
 
 elif endType == 'squaredOrClosed':
     print(endType)
-    nEnd = 2
-    nTotal = Ls/d-1
-    nActive = nTotal - nEnd
-    pitch = (L0-3*d)/nActive
+    nEnd_ = 2
+    nt_ = Ls_in/wireDiameter_in-1
+    na_ = nt_ - nEnd_
+    pitch_in_rev = (L0_in-3*wireDiameter_in)/na_
     
 elif endType == 'squaredAndGround':
     print(endType)    
-    nEnd = 2  
-    nTotal = Ls/d
-    nActive = nTotal - nEnd
-    pitch = (L0-2*d)/nActive
+    nEnd_ = 2  
+    nt_ = Ls_in/wireDiameter_in
+    na_ = nt_ - nEnd_
+    pitch_in_rev = (L0_in-2*wireDiameter_in)/na_
+else:
+	print("weve got problems")
     
 
-print(nEnd, nTotal, nActive, pitch)
+print(nEnd_, nt_, na_, pitch_in_rev)
 
 
 
 
 
-if(d < 0.004):
-    print('Too small a wire')
+if(wireDiameter_in < 0.004):
+    	print("weve got problems")
 
 #Shigley 10-4: "ASTM Code", exponent m, d_min [in], d_max [in], A kpsi-in
-propTable10_4 = np.array([["A228", 0.145, 0.004, 0.256, 201],
+propTable10_4 = np.array([
+["A228", 0.145, 0.004, 0.256, 201],
 ["A229", 0.187, 0.02, 0.5, 147],
 ["A227", 0.19, 0.028, 0.5, 140],
 ["A232", 0.168, 0.032, 0.437, 169],
@@ -96,15 +119,15 @@ improperSize = False
 if material == 'A313':
     print(material)
     prop4Row = 5
-    if d < float(propTable10_4[prop4Row,2]):
+    if wireDiameter_in < float(propTable10_4[prop4Row,2]):
         improperSize = True
         print("bad size")
-    elif d < float(propTable10_4[prop4Row,3]):
+    elif wireDiameter_in < float(propTable10_4[prop4Row,3]):
         print('prop4Row = ', prop4Row)
         #this is fine
-    elif d < float(propTable10_4[prop4Row+1,3]):
+    elif wireDiameter_in < float(propTable10_4[prop4Row+1,3]):
         prop4Row +=1 
-    elif d < float(propTable10_4[prop4Row+2,3]):
+    elif wireDiameter_in < float(propTable10_4[prop4Row+2,3]):
         prop4Row +=2 
     else:
         improperSize = True
@@ -113,15 +136,15 @@ if material == 'A313':
 elif material == 'B159':
     print(material)
     prop4Row = 8
-    if d < float(propTable10_4[prop4Row,2]):
+    if wireDiameter_in < float(propTable10_4[prop4Row,2]):
         improperSize = True
         print("bad size")
-    elif d < float(propTable10_4[prop4Row,3]):
+    elif wireDiameter_in < float(propTable10_4[prop4Row,3]):
         print('prop4Row = ', prop4Row)
         #this is fine
-    elif d < float(propTable10_4[prop4Row+1,3]):
+    elif wireDiameter_in < float(propTable10_4[prop4Row+1,3]):
         prop4Row +=1 
-    elif d < float(propTable10_4[prop4Row+2,3]):
+    elif wireDiameter_in < float(propTable10_4[prop4Row+2,3]):
         prop4Row +=2
     else:
         improperSize = True
@@ -140,16 +163,25 @@ elif material == 'A401':
 else:
     print('invalid material')
 
+
+# print for debugging
 print(float(propTable10_4[prop4Row,2]))
 print('test')
 
-if d < float(propTable10_4[prop4Row,2]) or d > float(propTable10_4[prop4Row,3]):
+# error handling
+if wireDiameter_in < float(propTable10_4[prop4Row,2]) or wireDiameter_in > float(propTable10_4[prop4Row,3]):
     improperSize = True
     print("bad size")
 
+
+# grabs the row
 properties4 = propTable10_4[prop4Row,:]
 
-ultimateTensileStrength = float(properties4[4]) * d **(-1*float(properties4[1])) #A/d**m
+A = float(properties4[4])
+# UTS actually established
+uts_kpsi = A * wireDiameter_in **(-1*float(properties4[1])) #A/d**m
+uts_psi = uts_kpsi * 1000;
+
 
 
 
@@ -174,15 +206,15 @@ prop5Row  = 0
 if material == 'A228':
     print(material)
     prop5Row = 0
-    if d < float(propTable10_5[prop5Row,4]):
+    if wireDiameter_in < float(propTable10_5[prop5Row,4]):
         print("good")
-    elif d < float(propTable10_5[prop5Row+1,4]):
+    elif wireDiameter_in < float(propTable10_5[prop5Row+1,4]):
         prop5Row +=1 
         print('prop5Row = ', prop5Row)
-    elif d < float(propTable10_5[prop5Row+2,4]):
+    elif wireDiameter_in < float(propTable10_5[prop5Row+2,4]):
         prop5Row +=2 
         print('prop5Row = ', prop5Row)
-    elif d < float(propTable10_5[prop5Row+3,4]):
+    elif wireDiameter_in < float(propTable10_5[prop5Row+3,4]):
         prop5Row +=3
         print('prop5Row = ', prop5Row)
     else:
@@ -192,15 +224,15 @@ if material == 'A228':
 elif material == 'A227':
     print(material)
     prop5Row = 4
-    if d < float(propTable10_5[prop5Row,4]):
+    if wireDiameter_in < float(propTable10_5[prop5Row,4]):
         print("good")
-    elif d < float(propTable10_5[prop5Row+1,4]):
+    elif wireDiameter_in < float(propTable10_5[prop5Row+1,4]):
         prop5Row +=1 
         print('prop5Row = ', prop5Row)
-    elif d < float(propTable10_5[prop5Row+2,4]):
+    elif wireDiameter_in < float(propTable10_5[prop5Row+2,4]):
         prop5Row +=2 
         print('prop5Row = ', prop5Row)
-    elif d < float(propTable10_5[prop5Row+3,4]):
+    elif wireDiameter_in < float(propTable10_5[prop5Row+3,4]):
         prop5Row +=3
         print('prop5Row = ', prop5Row)
     else:
@@ -221,60 +253,52 @@ else:
     print('invalid material')
 
 
-
+# extract the row
 properties5 = propTable10_5[prop5Row,:]
 
-G = properties5[6]
+# get property
+G_Mlbf_in2 = float(properties5[6])
 
 
 if material == 'A228' or material == 'A227':
-    sSY = 0.45*ultimateTensileStrength
+    sSY_psi = 0.45*uts_psi
 elif material == '0':
-    sSY = 0.5*ultimateTensileStrength
+    sSY_psi = 0.5*uts_psi
 elif material == 'A313':
-    sSY = 0.35*ultimateTensileStrength
+    sSY_psi = 0.35*uts_psi
 elif material == 'A401' or material == 'A232' or material == 'B159':
-    sSY = 0.35*ultimateTensileStrength     
+    sSY_psi = 0.35*uts_psi     
 
 # Calculation of spring rate
-C = D/d
-kB = (4*C+2)/(4*C-3)
-k = d**4 * float(G) / (8 * D)
+C_ = meanDiam_in/wireDiameter_in
+kB_ = (4*C_+2)/(4*C_-3)
+k_lbf_in = wireDiameter_in**4 * (G_Mlbf_in2 * 1e6) / (8 * meanDiam_in**3 * na_)
 
 # STATIC ANALYSIS
 # SOLID LENGTH
-fShut = k * (L0-Ls) # __________ OUTPUT __________
-tauS = kB * 8 * fShut * D / (np.pi * d**3)
-nShut = sSY / tauS # __________ OUTPUT __________
+fShut_lbf = k_lbf_in * (L0_in-Ls_in) # __________ OUTPUT __________
+tauS_lbf_in2 = kB_ * 8 * fShut_lbf * meanDiam_in / (np.pi * wireDiameter_in**3)
+nShut_ = sSY_psi / tauS_lbf_in2 # __________ OUTPUT __________
 
-fInput = 50.0 # __________ INPUT __________
-tauFInput = kB * 8 * fInput * D / (np.pi * d**3)
-nStatic = sSY / tauFInput # __________ OUTPUT __________
-
+tauFInput_psi = kB_ * 8 * fInput_lbf * meanDiam_in / (np.pi * wireDiameter_in**3)
+nStatic_ = sSY_psi / tauFInput_psi # __________ OUTPUT __________
 
 
-# FATIGUE ANALYSIS
-fMax = 50.0 # __________ INPUT __________
-fMin = 20.0# __________ INPUT __________
+# *** FAtigue analysis
 
-fA = (fMax - fMin)/2
-fM = (fMax + fMin)/2
+fA_lbf = (fMax_lbf - fMin_lbf)/2
+fM_lbf = (fMax_lbf + fMin_lbf)/2
 
-tA = kB * 8 * fA * D / (np.pi * d**3)
-tM = kB * 8 * fM * D / (np.pi * d**3)
+tA_psi = kB_ * 8 * fA_lbf * meanDiam_in / (np.pi * wireDiameter_in**3)
+tM_psi = kB_ * 8 * fM_lbf * meanDiam_in / (np.pi * wireDiameter_in**3)
 
-sSA_psi = 35,000 # Unpeened
-sSM_psi = 55,000 # Unpeened
-sSU = 0.67 * ultimateTensileStrength# Unpeened
+sSA_psi = 35000 # Unpeened
+sSM_psi = 55000 # Unpeened
+sSU_psi = 0.67 * uts_psi# Unpeened
 
-sSE = sSA_psi/ (1 - sSM_psi /sSU)
+sSE_psi = sSA_psi / (1 - sSM_psi / sSU_psi)
 
-nFatigue = (tA/sSE + tM/sSU)**(-1) # __________ OUTPUT __________
+nFatigue_ = (tA_psi/sSE_psi + tM_psi/sSU_psi)**(-1) # __________ OUTPUT __________
 
-# TESTING
-print('prop4Row = ', prop4Row)
-print(propTable10_4[prop4Row,:])
 
-print('prop5Row = ', prop5Row)
-print(propTable10_5[prop5Row,:])
-
+print("done")
