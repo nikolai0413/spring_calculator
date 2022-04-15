@@ -1,5 +1,7 @@
 import { object, string, number } from 'yup';
 
+export const apiUrl = "https://bsthlri5j1.execute-api.us-east-1.amazonaws.com/springs_backend"
+
 export const materials = [
 	{
 		value: 1,
@@ -53,30 +55,30 @@ export const endTypes_labels = endTypes.map((obj) => obj.label);
 export const mainRequestSchema = object().shape({
 	material: string().oneOf(materials_labels).required(),
 	endType: string().oneOf(endTypes_labels).required(),
-	wireDiameter_mm: number().positive().required(),
-	OD_mm: number().positive().required(),
-	L0_mm: number().positive().required(),
-	Ls_mm: number().positive().required(),
+	wireDiameter_in: number().positive().required(),
+	OD_in: number().positive().required(),
+	L0_in: number().positive().required(),
+	Ls_in: number().positive().required(),
 });
 
 export const mainResultsTemplate = {
-	pitch_mm: '',
+	pitch_in_rev: '',
 	nt_: '',
 	na_: '',
-	k_N_m: '',
-	F_ls_N: '',
+	k_lbf_in: '',
+	Fls_lbf: '',
 	n_ls_: '',
 };
 
 export const staticRequestSchema = object().shape({
 	material: string().oneOf(materials_labels).required(),
 	endType: string().oneOf(endTypes_labels).required(),
-	wireDiameter_mm: number().positive().required(),
-	OD_mm: number().positive().required(),
-	L0_mm: number().positive().required(),
-	Ls_mm: number().positive().required(),
+	wireDiameter_in: number().positive().required(),
+	OD_in: number().positive().required(),
+	L0_in: number().positive().required(),
+	Ls_in: number().positive().required(),
 
-	Fs_N: number().required(),
+	Fs_lbf: number().required(),
 });
 
 export const staticResultsTemplate = {
@@ -86,13 +88,13 @@ export const staticResultsTemplate = {
 export const fatigueRequestSchema = object().shape({
 	material: string().oneOf(materials_labels).required(),
 	endType: string().oneOf(endTypes_labels).required(),
-	wireDiameter_mm: number().positive().required(),
-	OD_mm: number().positive().required(),
-	L0_mm: number().positive().required(),
-	Ls_mm: number().positive().required(),
+	wireDiameter_in: number().positive().required(),
+	OD_in: number().positive().required(),
+	L0_in: number().positive().required(),
+	Ls_in: number().positive().required(),
 
-	F_max_N: number().required(),
-	F_min_N: number().required(),
+	F_max_lbf: number().required(),
+	F_min_lbf: number().required(),
 });
 
 export const fatigueResultsTemplate = {

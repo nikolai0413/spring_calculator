@@ -1,4 +1,5 @@
 import {
+	apiUrl,
   mainResultsTemplate,
   mainRequestSchema,
   staticResultsTemplate,
@@ -23,15 +24,15 @@ class App extends React.Component {
     this.state = {
       material: undefined,
       endType: undefined,
-      wireDiameter_mm: undefined,
-      OD_mm: undefined,
-      L0_mm: undefined,
-      Ls_mm: undefined,
+      wireDiameter_in: undefined,
+      OD_in: undefined,
+      L0_in: undefined,
+      Ls_in: undefined,
 
-      Fs_N: undefined,
+      Fs_lbbf: undefined,
 
-      F_max_N: undefined,
-      F_min_N: undefined,
+      F_max_lbf: undefined,
+      F_min_lbf: undefined,
 
       wasValidated: {
         main: false,
@@ -88,10 +89,10 @@ class App extends React.Component {
   validateMain(cb) {
     // clean numeric data
     let numericValues = _.pick(this.state, [
-      'wireDiameter_mm',
-      'OD_mm',
-      'L0_mm',
-      'Ls_mm',
+      'wireDiameter_in',
+      'OD_in',
+      'L0_in',
+      'Ls_in',
     ]);
     numericValues = _.mapValues(numericValues, (value) => _.trim(value));
     numericValues = _.mapValues(numericValues, (value) =>
@@ -128,7 +129,7 @@ class App extends React.Component {
           if (!this.state.inputError.main) {
             axios
               .post(
-                'https://vhdufpz2ne.execute-api.us-east-1.amazonaws.com/attempt1_python',
+                apiUrl,
                 this.state.mainReqData,
                 { timeout: 3500, params: { CALCULATION: 'MAIN' } }
               )
@@ -155,11 +156,11 @@ class App extends React.Component {
 
   validateStatic(cb) {
     let numericValues = _.pick(this.state, [
-      'wireDiameter_mm',
-      'OD_mm',
-      'L0_mm',
-      'Ls_mm',
-      'Fs_N',
+      'wireDiameter_in',
+      'OD_in',
+      'L0_in',
+      'Ls_in',
+      'Fs_lbf',
     ]);
     numericValues = _.mapValues(numericValues, (value) => _.trim(value));
     numericValues = _.mapValues(numericValues, (value) =>
@@ -195,7 +196,7 @@ class App extends React.Component {
           if (!this.state.inputError.static) {
             axios
               .post(
-                'https://vhdufpz2ne.execute-api.us-east-1.amazonaws.com/attempt1_python',
+                apiUrl,
                 this.state.staticReqData,
                 { timeout: 3500, params: { CALCULATION: 'STATIC' } }
               )
@@ -222,12 +223,12 @@ class App extends React.Component {
 
   validateFatigue(cb) {
     let numericValues = _.pick(this.state,[
-      'wireDiameter_mm',
-      'OD_mm',
-      'L0_mm',
-      'Ls_mm',
-			'F_max_N',
-			'F_min_N'
+      'wireDiameter_in',
+      'OD_in',
+      'L0_in',
+      'Ls_in',
+			'F_max_lbf',
+			'F_min_lbf'
 		]);
     numericValues = _.mapValues(numericValues, (value) => _.trim(value));
     numericValues = _.mapValues(numericValues, (value) =>
@@ -263,7 +264,7 @@ class App extends React.Component {
           if (!this.state.inputError.fatigue) {
             axios
               .post(
-                'https://vhdufpz2ne.execute-api.us-east-1.amazonaws.com/attempt1_python',
+                apiUrl,
                 this.state.fatigueReqData,
                 { timeout: 3500, params: { CALCULATION: 'FATIGUE' } }
               )

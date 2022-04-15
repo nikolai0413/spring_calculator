@@ -19,9 +19,9 @@ export default class Fatigue extends Component {
                   className='form-control'
                   id='exampleFormControlInput1'
                   placeholder='Ex: 110.2'
-									onChange={this.props.eventUpdate('F_max_N')}
+									onChange={this.props.eventUpdate('F_max_lbf')}
                 />
-                <span className='input-group-text'>N</span>
+                <span className='input-group-text'>lbf</span>
               </div>
             </div>
           </div>
@@ -35,9 +35,9 @@ export default class Fatigue extends Component {
                   className='form-control'
                   id='exampleFormControlInput1'
                   placeholder='Ex: 110.2'
-									onChange={this.props.eventUpdate('F_min_N')}
+									onChange={this.props.eventUpdate('F_min_lbf')}
                 />
-                <span className='input-group-text'>N</span>
+                <span className='input-group-text'>lbf</span>
               </div>
             </div>
           </div>

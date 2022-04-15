@@ -1,6 +1,8 @@
+import numpy as np
+
 from .main import main
 
-def fatigue(*args, F_max_N, F_min_N, **kwargs):
+def fatigue(*args, F_max_lbf, F_min_lbf, **kwargs):
 	"""Calculates fatigue factor of safety. Calls main to recalculate spring parameters, then peforms factor of safety calculation"""
 
 	# get main results since static calculation needs that info
@@ -11,7 +13,7 @@ def fatigue(*args, F_max_N, F_min_N, **kwargs):
 
 	# TODO update return value
 	responseData = {
-		"n_f_": F_max_N + F_min_N
+		"n_f_": F_max_lbf + F_min_lbf
 	}
 
 	return responseData

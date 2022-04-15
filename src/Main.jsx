@@ -45,13 +45,10 @@ export default class extends Component {
                 type='text'
                 className='form-control'
                 id='exampleFormControlInput1'
-                placeholder='Ex: 2.5'
-                // onChange={(ev) =>
-                //   this.setState({ wireDiameter_mm: ev.target.value })
-                // }
-								onChange={this.props.eventUpdate('wireDiameter_mm')}
+                placeholder='Ex: 0.125'
+								onChange={this.props.eventUpdate('wireDiameter_in')}
               />
-              <span className='input-group-text'>mm</span>
+              <span className='input-group-text'>in</span>
             </div>
           </div>
         </div>
@@ -67,10 +64,9 @@ export default class extends Component {
                 className='form-control'
                 id='exampleFormControlInput1'
                 placeholder='Ex: 5.0'
-                // onChange={(ev) => this.setState({ OD_mm: ev.target.value })}
-								onChange={this.props.eventUpdate('OD_mm')}
+								onChange={this.props.eventUpdate('OD_in')}
               />
-              <span className='input-group-text'>mm</span>
+              <span className='input-group-text'>in</span>
             </div>
           </div>
         </div>
@@ -89,10 +85,9 @@ export default class extends Component {
                 className='form-control'
                 id='exampleFormControlInput1'
                 placeholder='Ex: 20.0'
-                // onChange={(ev) => this.setState({ L0_mm: ev.target.value })}
-								onChange={this.props.eventUpdate('L0_mm')}
+								onChange={this.props.eventUpdate('L0_in')}
               />
-              <span className='input-group-text'>mm</span>
+              <span className='input-group-text'>in</span>
             </div>
           </div>
         </div>
@@ -111,10 +106,9 @@ export default class extends Component {
                 className='form-control'
                 id='exampleFormControlInput1'
                 placeholder='Ex: 25.0'
-                // onChange={(ev) => this.setState({ Ls_mm: ev.target.value })}
-								onChange={this.props.eventUpdate('Ls_mm')}
+								onChange={this.props.eventUpdate('Ls_in')}
               />
-              <span className='input-group-text'>mm</span>
+              <span className='input-group-text'>in</span>
             </div>
           </div>
         </div>
@@ -176,8 +170,8 @@ export default class extends Component {
                   <td scope='row'>
                     Pitch <i>p</i>
                   </td>
-                  <td>{this.props.mainResults.pitch_mm}</td>
-                  <td>mm</td>
+                  <td>{this.props.mainResults.pitch_in}</td>
+                  <td>in</td>
                 </tr>
                 <tr>
                   <td scope='row'>
@@ -203,8 +197,8 @@ export default class extends Component {
                   <td scope='row'>
                     Spring rate <i>k</i>
                   </td>
-                  <td>{this.props.mainResults.k_N_m}</td>
-                  <td>N/m</td>
+                  <td>{this.props.mainResults.k_lbf_in}</td>
+                  <td>lbf/in</td>
                 </tr>
                 <tr>
                   <td scope='row'>
@@ -213,8 +207,8 @@ export default class extends Component {
                       L<sub>s</sub>
                     </i>
                   </td>
-                  <td>{this.props.mainResults.F_ls_N}</td>
-                  <td>N</td>
+                  <td>{this.props.mainResults.Fls_lbf}</td>
+                  <td>lbf</td>
                 </tr>
                 <tr>
                   <td scope='row'>

@@ -23,10 +23,9 @@ export default class Static extends Component {
                   className='form-control'
                   id='exampleFormControlInput1'
                   placeholder='Ex: 110.2'
-                  // onChange={(ev) => this.setState({ Fs_N: ev.target.value })}
-									onChange={this.props.eventUpdate('Fs_N')}
+									onChange={this.props.eventUpdate('Fs_lbf')}
                 />
-                <span className='input-group-text'>N</span>
+                <span className='input-group-text'>lbf</span>
               </div>
             </div>
           </div>

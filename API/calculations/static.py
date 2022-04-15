@@ -1,6 +1,8 @@
+import numpy as np
+
 from .main import main
 
-def static(*args, Fs_N, **kwargs):
+def static(*args, Fs_lbf, **kwargs):
 	"""Calculates static factor of safety. Calls main to recalculate spring parameters, then peforms factor of safety calculation"""
 
 	# get main results since static calculation needs that info
@@ -12,7 +14,7 @@ def static(*args, Fs_N, **kwargs):
 
 	# TODO update return value
 	responseData = {
-		"n_s_": Fs_N
+		"n_s_": Fs_lbf
 	}
 
 	return responseData

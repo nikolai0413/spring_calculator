@@ -8,7 +8,7 @@ staticResultsKeys = ['n_s_']
 def getStaticArgs():
     mainArgs = getMainArgs()
     staticArgs = mainArgs
-    staticArgs['Fs_N'] = uniform(0, 1000);
+    staticArgs['Fs_lbf'] = uniform(0, 1000);
     return staticArgs
 
 def test_static():

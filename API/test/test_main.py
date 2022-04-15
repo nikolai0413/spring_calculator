@@ -13,17 +13,17 @@ materialTypes = [
 
 endTypes = ["Plain", "Plain and ground", "Squared or closed", "Squared and ground"]
 
-mainResultsKeys = ["pitch_mm", "nt_", "na_", "k_N_m", "F_ls_N", "n_ls_"]
+mainResultsKeys = ["pitch_in_rev", "nt_", "na_", "k_lbf_in", "Fls_lbf", "n_ls_"]
 
 
 def getMainArgs():
     return {
         "material": materialTypes[randint(0, len(materialTypes)-1)],  # random index
         "endType": endTypes[randint(0, len(endTypes)-1)],
-        "wireDiameter_mm": uniform(1, 5),  # random number in range
-        "OD_mm": uniform(10, 100),
-        "L0_mm": uniform(50, 400),
-        "Ls_mm": uniform(30, 50),
+        "wireDiameter_in": uniform(1, 5),  # random number in range
+        "OD_in": uniform(10, 100),
+        "L0_in": uniform(50, 400),
+        "Ls_in": uniform(30, 50),
     }
 
 

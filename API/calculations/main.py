@@ -1,4 +1,6 @@
-def main(*args, material, endType, wireDiameter_mm, OD_mm, L0_mm, Ls_mm):
+import numpy as np
+
+def main(*args, material, endType, wireDiameter_in, OD_in, L0_in, Ls_in):
     """Performs primary or 'main' calculation for the app. Returns python dict"""
 
     
@@ -8,12 +10,12 @@ def main(*args, material, endType, wireDiameter_mm, OD_mm, L0_mm, Ls_mm):
 
     # TODO update return value
     responseData = {
-        "pitch_mm": wireDiameter_mm,
-        "nt_": OD_mm,
-        "na_": L0_mm,
-        "k_N_m": Ls_mm,
-        "F_ls_N": wireDiameter_mm,
-        "n_ls_": wireDiameter_mm,
+        "pitch_in_rev": wireDiameter_in,
+        "nt_": OD_in,
+        "na_": L0_in,
+        "k_lbf_in": Ls_in,
+        "Fls_lbf": wireDiameter_in,
+        "n_ls_": wireDiameter_in,
     }
 		
     return responseData

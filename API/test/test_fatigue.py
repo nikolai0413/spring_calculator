@@ -10,8 +10,8 @@ def getFatigueArgs():
     mainArgs = getMainArgs()
     fatigueArgs = mainArgs
 
-    fatigueArgs['F_max_N'] = uniform(300,500)
-    fatigueArgs['F_min_N'] = uniform(100,300)
+    fatigueArgs['F_max_lbf'] = uniform(300,500)
+    fatigueArgs['F_min_lbf'] = uniform(100,300)
 
     return fatigueArgs
 
