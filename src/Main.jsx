@@ -218,7 +218,7 @@ export default class extends Component {
                       L<sub>s</sub>
                     </i>
                   </td>
-                  <td>{customPrecision(this.props.mainResults.nShut_, 1)}</td>
+                  <td>{customPrecision(this.props.mainResults.nShut_, 2)}</td>
                   <td></td>
                 </tr>
               </tbody>

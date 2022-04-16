@@ -88,7 +88,7 @@ export default class Static extends Component {
                         n<sub>s</sub>
                       </i>
                     </td>
-                    <td>{customPrecision(this.props.staticResults.nStatic_, 1)}</td>
+                    <td>{customPrecision(this.props.staticResults.nStatic_, 2)}</td>
                     <td></td>
                   </tr>
                 </tbody>

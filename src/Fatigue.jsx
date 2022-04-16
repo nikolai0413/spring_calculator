@@ -101,7 +101,7 @@ export default class Fatigue extends Component {
                         n<sub>f</sub>
                       </i>
                     </td>
-                    <td>{customPrecision(this.props.fatigueResults.nFatigue_, 1)}</td>
+                    <td>{customPrecision(this.props.fatigueResults.nFatigue_, 2)}</td>
                     <td></td>
                   </tr>
                 </tbody>
