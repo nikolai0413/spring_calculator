@@ -2,17 +2,13 @@ import React, { Component } from "react";
 import { endTypes, materials } from "./data";
 
 import Select from "react-select";
+import customPrecision from "./util";
 
 export default class extends Component {
   constructor(props) {
     super(props);
-    this.myPrecision = this.myPrecision.bind(this)
   }
-  myPrecision(value, x) {
-    if (value && typeof value === "number") {
-      return value.toFixed(x);
-    }
-  }
+
 
   render() {
     return (
@@ -175,7 +171,7 @@ export default class extends Component {
                   <td scope="row">
                     Pitch <i>p</i>
                   </td>
-                  <td>{this.myPrecision(this.props.mainResults.pitch_in_rev, 4)}</td>
+                  <td>{customPrecision(this.props.mainResults.pitch_in_rev, 4)}</td>
                   <td>in</td>
                 </tr>
                 <tr>
@@ -185,7 +181,7 @@ export default class extends Component {
                       N<sub>t</sub>
                     </i>
                   </td>
-                  <td>{this.myPrecision(this.props.mainResults.nt_, 1)}</td>
+                  <td>{customPrecision(this.props.mainResults.nt_, 1)}</td>
                   <td>#</td>
                 </tr>
                 <tr>
@@ -195,14 +191,14 @@ export default class extends Component {
                       N<sub>a</sub>
                     </i>
                   </td>
-                  <td>{this.myPrecision(this.props.mainResults.na_, 1)}</td>
+                  <td>{customPrecision(this.props.mainResults.na_, 1)}</td>
                   <td>#</td>
                 </tr>
                 <tr>
                   <td scope="row">
                     Spring rate <i>k</i>
                   </td>
-                  <td>{this.myPrecision(this.props.mainResults.k_lbf_in, 4)}</td>
+                  <td>{customPrecision(this.props.mainResults.k_lbf_in, 4)}</td>
                   <td>lbf/in</td>
                 </tr>
                 <tr>
@@ -212,7 +208,7 @@ export default class extends Component {
                       L<sub>s</sub>
                     </i>
                   </td>
-                  <td>{this.myPrecision(this.props.mainResults.fShut_lbf, 4)}</td>
+                  <td>{customPrecision(this.props.mainResults.fShut_lbf, 4)}</td>
                   <td>lbf</td>
                 </tr>
                 <tr>
@@ -222,7 +218,7 @@ export default class extends Component {
                       L<sub>s</sub>
                     </i>
                   </td>
-                  <td>{this.myPrecision(this.props.mainResults.nShut_, 1)}</td>
+                  <td>{customPrecision(this.props.mainResults.nShut_, 1)}</td>
                   <td></td>
                 </tr>
               </tbody>

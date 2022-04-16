@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import customPrecision from './util';
+
 
 export default class Fatigue extends Component {
   render() {
@@ -99,7 +101,7 @@ export default class Fatigue extends Component {
                         n<sub>f</sub>
                       </i>
                     </td>
-                    <td>{this.props.fatigueResults.nFatigue_}</td>
+                    <td>{customPrecision(this.props.fatigueResults.nFatigue_, 1)}</td>
                     <td></td>
                   </tr>
                 </tbody>

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import customPrecision from './util';
 
 export default class Static extends Component {
   render() {
@@ -87,7 +88,7 @@ export default class Static extends Component {
                         n<sub>s</sub>
                       </i>
                     </td>
-                    <td>{this.props.staticResults.nStatic_}</td>
+                    <td>{customPrecision(this.props.staticResults.nStatic_, 1)}</td>
                     <td></td>
                   </tr>
                 </tbody>
