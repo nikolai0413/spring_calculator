@@ -134,6 +134,7 @@ class App extends React.Component {
                 { timeout: 3500, params: { CALCULATION: 'MAIN' } }
               )
               .then((rep) => {
+                console.log(rep.data)
                 this.setState({
                   mainResults: rep.data,
                   loading: { main: false },

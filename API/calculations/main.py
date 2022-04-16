@@ -7,7 +7,7 @@ def main(*args, material, endType, wireDiameter_in, OD_in, L0_in, Ls_in):
     """Performs primary or 'main' calculation for the app. Returns python dict"""
 
     mc = MainCalculate(material, endType, wireDiameter_in, OD_in, L0_in, Ls_in)
-
+    
     return mc.calculateMain(True)
 
 

@@ -1,4 +1,5 @@
 import json
+from calculations import CalculationError
 import calculations as calc
 
 
@@ -28,6 +29,8 @@ def lambda_handler(event, context=None):
         return {"statusCode": 400, "ErrorMessage": repr(err)}
 
     except TypeError as err:
+        return {"statusCode": 400, "ErrorMessage": repr(err)}
+    except CalculationError as err:
         return {"statusCode": 400, "ErrorMessage": repr(err)}
 
 
