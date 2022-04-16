@@ -32,23 +32,24 @@ L0_in = 4 + 3/8
 Ls_in = wireDiameter_in * 23; # for example 10-4
 
 
-fInput_lbf = 30
+Fstatic_lbf = 30
 
-fMax_lbf = 35
-fMin_lbf = 5
+F_max_lbf = 35
+F_min_lbf = 5
 
 # ******************************
 
 
-
-
-
 # ************** OUTPUTS ****************
-
+pitch_in_rev = None
 nt_ = None
 na_ = None
-pitch_in_rev = None
+k_lbf_in = None
 fShut_lbf = None
+nShut_ = None
+
+nStatic_ = None
+
 nFatigue_ = None
 
 # ******************************
@@ -113,69 +114,69 @@ propTable10_4 = np.array([
 ["B159", 0.028, 0.022, 0.075, 121],
 ["B159", 0.064, 0.075, 0.3, 110]])
 
-prop4Row  = 1
+table10_4_rowsel  = 1
 improperSize = False
 
 if material == 'A313':
     print(material)
-    prop4Row = 5
-    if wireDiameter_in < float(propTable10_4[prop4Row,2]):
+    table10_4_rowsel = 5
+    if wireDiameter_in < float(propTable10_4[table10_4_rowsel,2]):
         improperSize = True
         print("bad size")
-    elif wireDiameter_in < float(propTable10_4[prop4Row,3]):
-        print('prop4Row = ', prop4Row)
+    elif wireDiameter_in < float(propTable10_4[table10_4_rowsel,3]):
+        print('table10_4_rowsel = ', table10_4_rowsel)
         #this is fine
-    elif wireDiameter_in < float(propTable10_4[prop4Row+1,3]):
-        prop4Row +=1 
-    elif wireDiameter_in < float(propTable10_4[prop4Row+2,3]):
-        prop4Row +=2 
+    elif wireDiameter_in < float(propTable10_4[table10_4_rowsel+1,3]):
+        table10_4_rowsel +=1 
+    elif wireDiameter_in < float(propTable10_4[table10_4_rowsel+2,3]):
+        table10_4_rowsel +=2 
     else:
         improperSize = True
         print("bad size")
     
 elif material == 'B159':
     print(material)
-    prop4Row = 8
-    if wireDiameter_in < float(propTable10_4[prop4Row,2]):
+    table10_4_rowsel = 8
+    if wireDiameter_in < float(propTable10_4[table10_4_rowsel,2]):
         improperSize = True
         print("bad size")
-    elif wireDiameter_in < float(propTable10_4[prop4Row,3]):
-        print('prop4Row = ', prop4Row)
+    elif wireDiameter_in < float(propTable10_4[table10_4_rowsel,3]):
+        print('table10_4_rowsel = ', table10_4_rowsel)
         #this is fine
-    elif wireDiameter_in < float(propTable10_4[prop4Row+1,3]):
-        prop4Row +=1 
-    elif wireDiameter_in < float(propTable10_4[prop4Row+2,3]):
-        prop4Row +=2
+    elif wireDiameter_in < float(propTable10_4[table10_4_rowsel+1,3]):
+        table10_4_rowsel +=1 
+    elif wireDiameter_in < float(propTable10_4[table10_4_rowsel+2,3]):
+        table10_4_rowsel +=2
     else:
         improperSize = True
         print("bad size")
 
 elif material == 'A228':
-    prop4Row = 0
+    table10_4_rowsel = 0
 elif material == 'A229':
-    prop4Row = 1
+    table10_4_rowsel = 1
 elif material == 'A227':
-    prop4Row = 2
+    table10_4_rowsel = 2
 elif material == 'A232':
-    prop4Row = 3
+    table10_4_rowsel = 3
 elif material == 'A401':
-    prop4Row = 4
+    table10_4_rowsel = 4
 else:
     print('invalid material')
 
 
 # print for debugging
-print(float(propTable10_4[prop4Row,2]))
+print(float(propTable10_4[table10_4_rowsel,2]))
 print('test')
 
 # error handling
-if wireDiameter_in < float(propTable10_4[prop4Row,2]) or wireDiameter_in > float(propTable10_4[prop4Row,3]):
+if wireDiameter_in < float(propTable10_4[table10_4_rowsel,2]) or wireDiameter_in > float(propTable10_4[table10_4_rowsel,3]):
     improperSize = True
     print("bad size")
 
 
 # grabs the row
-properties4 = propTable10_4[prop4Row,:]
+properties4 = propTable10_4[table10_4_rowsel,:]
 
 A = float(properties4[4])
 # UTS actually established
@@ -280,14 +281,17 @@ fShut_lbf = k_lbf_in * (L0_in-Ls_in) # __________ OUTPUT __________
 tauS_lbf_in2 = kB_ * 8 * fShut_lbf * meanDiam_in / (np.pi * wireDiameter_in**3)
 nShut_ = sSY_psi / tauS_lbf_in2 # __________ OUTPUT __________
 
-tauFInput_psi = kB_ * 8 * fInput_lbf * meanDiam_in / (np.pi * wireDiameter_in**3)
+
+
+
+tauFInput_psi = kB_ * 8 * Fstatic_lbf * meanDiam_in / (np.pi * wireDiameter_in**3)
 nStatic_ = sSY_psi / tauFInput_psi # __________ OUTPUT __________
 
 
 # *** FAtigue analysis
 
-fA_lbf = (fMax_lbf - fMin_lbf)/2
-fM_lbf = (fMax_lbf + fMin_lbf)/2
+fA_lbf = (F_max_lbf - F_min_lbf)/2
+fM_lbf = (F_max_lbf + F_min_lbf)/2
 
 tA_psi = kB_ * 8 * fA_lbf * meanDiam_in / (np.pi * wireDiameter_in**3)
 tM_psi = kB_ * 8 * fM_lbf * meanDiam_in / (np.pi * wireDiameter_in**3)

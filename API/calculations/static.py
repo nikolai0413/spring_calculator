@@ -1,5 +1,3 @@
-import numpy as np
-
 from .main import main
 
 def static(*args, Fs_lbf, **kwargs):
@@ -14,7 +12,7 @@ def static(*args, Fs_lbf, **kwargs):
 
 	# TODO update return value
 	responseData = {
-		"n_s_": Fs_lbf
+		"nStatic_": Fs_lbf
 	}
 
 	return responseData

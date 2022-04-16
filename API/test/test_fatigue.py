@@ -4,7 +4,7 @@ from random import randint, uniform
 from .test_main import getMainArgs
 import pytest
 
-fatigueResultKeys = ['n_f_']
+fatigueResultKeys = ['nFatigue_']
 
 def getFatigueArgs():
     mainArgs = getMainArgs()

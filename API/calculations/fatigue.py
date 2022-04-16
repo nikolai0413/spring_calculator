@@ -1,5 +1,3 @@
-import numpy as np
-
 from .main import main
 
 def fatigue(*args, F_max_lbf, F_min_lbf, **kwargs):
@@ -13,7 +11,7 @@ def fatigue(*args, F_max_lbf, F_min_lbf, **kwargs):
 
 	# TODO update return value
 	responseData = {
-		"n_f_": F_max_lbf + F_min_lbf
+		"nFatigue_": F_max_lbf + F_min_lbf
 	}
 
 	return responseData
