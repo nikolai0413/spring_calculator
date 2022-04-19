@@ -46,7 +46,7 @@ export default class extends Component {
                 type="text"
                 className="form-control"
                 id="exampleFormControlInput1"
-                placeholder="Ex: 0.125"
+                placeholder="Ex: 0.110"
                 onChange={this.props.eventUpdate("wireDiameter_in")}
               />
               <span className="input-group-text">in</span>
