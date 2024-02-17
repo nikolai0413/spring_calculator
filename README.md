@@ -33,8 +33,17 @@ Formulas taken from Shigley's Mechanical Engineering Design (8th Edition)
 
 ### Frontend
 Frontend functionality made with [ReactJS](https://react.dev/)
+
 Layout made with [Bootstrap](https://getbootstrap.com/)
-Files in <./src>
 
-Backend calculations performed in Python
+Source code in `./src`
 
+Website hosted on [AWS S3](https://aws.amazon.com/s3/) cloud object storage platform, configured to securely host static website
+
+### Backend
+
+Backend calculations performed in [Python](https://www.python.org/) developed as an API
+
+Deployed to the [AWS Lambda](https://aws.amazon.com/lambda/) serverless compute platform
+
+Source code in `./API`
