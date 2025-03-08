@@ -298,7 +298,7 @@ class App extends React.Component {
             <div className='container-fluid py-5'>
               <h1 className='display-5 fw-bold'>ME35401 Spring Calculator</h1>
               <p className='col-md-8 fs-4'>
-                By Peter Salisbury and Nicolas Fransen
+                By Nicolas Fransen and Peter Salisbury
               </p>
               <a href='#start' className='btn btn-primary btn-lg' type='button'>
                 Get Started
